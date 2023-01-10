@@ -10,14 +10,12 @@ class HomeUtama extends StatefulWidget {
       {required this.nama,
       required this.id,
       required this.listStream,
-      required this.debugAngka,
       super.key});
   final String nama;
   final String id;
   // final List<BluetoothService> services;
   // final Stream<List<int>>? listStream;
-  final String listStream;
-  final String debugAngka;
+  final int listStream;
 
   @override
   State<HomeUtama> createState() => _HomeUtamaState();
@@ -164,7 +162,9 @@ class _HomeUtamaState extends State<HomeUtama> {
                     },
                   ),*/
                   Text(
-                    '${widget.listStream} DPM',
+                    widget.listStream == 0
+                        ? 'Lakukan Scanning!'
+                        : '${widget.listStream} DPM',
                     style: cHeader1Style.copyWith(
                       color: cBlackColor,
                     ),
@@ -204,9 +204,9 @@ class _HomeUtamaState extends State<HomeUtama> {
             height: 26,
           ),
           Text(
-            dummyValue < 50
+            widget.listStream < 60
                 ? 'HeartRate Rendah'
-                : dummyValue > 80
+                : widget.listStream > 100
                     ? 'HeartRate Tinggi'
                     : 'Normal',
             style: cNavBarText.copyWith(
@@ -214,7 +214,7 @@ class _HomeUtamaState extends State<HomeUtama> {
               color: cPurpleDarkColor,
             ),
           ),
-          Text(widget.debugAngka),
+          // Text(widget.debugAngka),
           /*ElevatedButton(
             onPressed: () {
               _sub.pause();

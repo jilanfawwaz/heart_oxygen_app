@@ -14,7 +14,7 @@ class HomeMap extends StatefulWidget {
   const HomeMap({super.key});
 
   @override
-  State<HomeMap> createState() => _HomeMapState();
+  State<HomeMap> createState() => _HomeMapState(); 
 }
 
 class _HomeMapState extends State<HomeMap> {
@@ -238,6 +238,7 @@ class _HomeMapState extends State<HomeMap> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
+                                                Stack(),
                                                 Text(
                                                   state.marker[index].name,
                                                   overflow:

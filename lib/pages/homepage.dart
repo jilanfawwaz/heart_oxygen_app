@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   //! Fix Bug Read 1 : hapus listStream
   // Stream<List<int>>? listStream;
   BluetoothCharacteristic? c;
-  int debugAngka = 0;
+  
   bool isCorrect = false;
 
   // late BluetoothCharacteristic c;
@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     List<BluetoothService> services =
         await widget.bluetoothDevice.discoverServices();
     //checking each services provided by device
+
     print('masuk discover 1');
     for (var service in services) {
       if (service.uuid.toString().toUpperCase().substring(4, 8) == '180D') {
@@ -53,9 +54,9 @@ class _HomePageState extends State<HomePage> {
             print('masuk discover 3 : ${characteristic.uuid.toString()}');
             //Updating characteristic to perform write operation.
             // c = characteristic;
-
             await characteristic.setNotifyValue(!characteristic.isNotifying);
-            await characteristic.read();
+            // await characteristic.read();
+
             setState(() {
               //! Fix Bug Read 1.2 : hapus listStream
               // listStream = characteristic.value.asBroadcastStream();
@@ -67,11 +68,6 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
-  }
-
-  readAgain() async {
-    await c!.setNotifyValue(!c!.isNotifying);
-    await c!.read();
   }
 
   @override
@@ -101,7 +97,7 @@ class _HomePageState extends State<HomePage> {
     });*/*/
     var bloc = context.read<BottompageCubit>();
 
-    Widget contentPage(int index, String heartRate, int debugAngkaLokal) {
+    Widget contentPage(int index, int heartRate,) {
       switch (index) {
         case 1:
           return const HomeMap();
@@ -121,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
-            debugAngka: debugAngkaLokal.toString(),
+            
           );
 
         case 3:
@@ -131,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
-            debugAngka: debugAngkaLokal.toString(),
+            
           );
       }
     }
@@ -316,9 +312,9 @@ class _HomePageState extends State<HomePage> {
                             initialData: const [],
                             builder: (context, snapshot) {
                               return snapshot.data!.length < 2
-                                  ? contentPage(state, 'loading', debugAngka)
+                                  ? contentPage(state, 0)
                                   : contentPage(state,
-                                      snapshot.data![1].toString(), debugAngka);
+                                      snapshot.data![1]);
                             },
                           );
                         },
@@ -404,128 +400,146 @@ class FindDevicesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('masuk 2');
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: cPurpleColor,
-        title: const Text('Find Mi Band Connection'),
-      ),
-      //! Bluetooth : 5.2 RefreshIndicator berfungsi untuk merefresh ulang halaman dengan menscroll kebawah melebihi batas scroll
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            //! Bluetooth : 5.7 megecek secara rutin apakah ada ada device yang terconnect, kalau ada nanti tampilin tombol open yang akan mengarahkan ke device screen
-            //! fungsi tombol ini kalau misal dari device screen ke back lagi ke halaman findDevice, maka akan ada tampilan button untuk kembali ke halaman device screen
-            StreamBuilder<List<BluetoothDevice>>(
-              stream: Stream.periodic(const Duration(seconds: 2))
-                  .asyncMap((_) => FlutterBluePlus.instance.connectedDevices),
-              initialData: const [],
-              builder: (c, snapshot) {
-                return Column(
-                  children: snapshot.data!
-                      .map(
-                        (d) => ListTile(
-                          title: Text(d.name),
-                          subtitle: Text(d.id.toString()),
-                          trailing: StreamBuilder<BluetoothDeviceState>(
-                            stream: d.state,
-                            initialData: BluetoothDeviceState.disconnected,
-                            builder: (c, snapshot) {
-                              if (snapshot.data ==
-                                  BluetoothDeviceState.connected) {
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: cPurpleColor,
-                                    shape: const StadiumBorder(),
-                                  ),
-                                  child: const Text('OPEN'),
-                                  onPressed: () => Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) {
-                                      d.disconnect();
-                                      d.connect();
-                                      return HomePage(
-                                        bluetoothDevice: d,
-                                      );
-                                    }),
-                                  ),
-                                );
-                              }
-                              return Text(snapshot.data.toString());
-                            },
-                          ),
-                        ),
-                      )
-                      .toList(),
-                );
-              },
-            ),
-            //! Bluetooth : 5.5 hasil scan setelah proses 5.4 akan dilisten menggunakan stream disini, return stream berupa list dari seluruh scan device
-            StreamBuilder<List<ScanResult>>(
-              stream: FlutterBluePlus.instance.scanResults,
-              initialData: const [],
-              builder: (c, snapshot) {
-                return Column(
-                  children: snapshot.data!
-                      .map(
-                        //! Bluetooth : 5.5.1 di map ke dalam widget custom ScanResultTile
-                        (r) => ScanResultTile(
-                          result: r,
-                          //! Bluetooth : 5.6.7 voidcallback ontap akan menampilkan halaman DeviceScreen yang kita connect
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                //! Bluetooth : 5.6.8 Connect ke device menggunakan method result.device.connect()
-                                r.device.disconnect();
-                                r.device.connect();
+    // print('masuk 2');
 
-                                return HomePage(
-                                  bluetoothDevice: r.device,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-
-      //! Bluetooth : 5.4 tombol floatingaction button untuk melakukan scan device bluetooth yang tersedia (return data dari stream adalah bool yang berisi tentang informasi apakah sedang menjalankan proses scan atau tidak)
-      floatingActionButton: StreamBuilder<bool>(
-        //? mengambil status boolean dari isscanning
-        stream: FlutterBluePlus.instance.isScanning,
-        initialData: false,
-        builder: (c, snapshot) {
-          //? kalau snapshot true karena sedang melakukan scanning, maka akan merubah button menjadi button stop
-          if (snapshot.data!) {
-            return FloatingActionButton(
-              //? kalau sedang melakukan scan, memanggil fungsi stopScan untuk menghentikan scan, mengubah snapshot dari true menjadi false
-              onPressed: () => FlutterBluePlus.instance.stopScan(),
-              backgroundColor: Colors.red,
-              child: const Icon(Icons.stop),
-            );
-            //? kalau snapshot false, maka akan melakukan scanning, ketika melakukan startScan maka snpshot akan berubah menjadi true
-          } else {
-            return FloatingActionButton(
-              //? memanggul fungsi startscan, mengubah snapshot dari stream menjadi true
-              onPressed: () => FlutterBluePlus.instance.startScan(
-                timeout: const Duration(seconds: 4),
-              ),
+    return StreamBuilder<BluetoothState>(
+      stream: FlutterBluePlus.instance.state,
+      initialData: BluetoothState.unknown,
+      builder: (context, snapshot) {
+        final state = snapshot.data;
+        if (state == BluetoothState.on) {
+          return Scaffold(
+            appBar: AppBar(
               backgroundColor: cPurpleColor,
-              child: const Icon(Icons.search),
-            );
-          }
-        },
-      ),
+              title: const Text('Find Mi Band Connection'),
+            ),
+            //! Bluetooth : 5.2 RefreshIndicator berfungsi untuk merefresh ulang halaman dengan menscroll kebawah melebihi batas scroll
+            body: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  //! Bluetooth : 5.7 megecek secara rutin apakah ada ada device yang terconnect, kalau ada nanti tampilin tombol open yang akan mengarahkan ke device screen
+                  //! fungsi tombol ini kalau misal dari device screen ke back lagi ke halaman findDevice, maka akan ada tampilan button untuk kembali ke halaman device screen
+                  StreamBuilder<List<BluetoothDevice>>(
+                    stream: Stream.periodic(const Duration(seconds: 2))
+                        .asyncMap(
+                            (_) => FlutterBluePlus.instance.connectedDevices),
+                    initialData: const [],
+                    builder: (c, snapshot) {
+                      return Column(
+                        children: snapshot.data!
+                            .map(
+                              (d) => ListTile(
+                                title: Text(d.name),
+                                subtitle: Text(d.id.toString()),
+                                trailing: StreamBuilder<BluetoothDeviceState>(
+                                  stream: d.state,
+                                  initialData:
+                                      BluetoothDeviceState.disconnected,
+                                  builder: (c, snapshot) {
+                                    if (snapshot.data ==
+                                        BluetoothDeviceState.connected) {
+                                      return ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: cPurpleColor,
+                                          shape: const StadiumBorder(),
+                                        ),
+                                        child: const Text('OPEN'),
+                                        onPressed: () =>
+                                            Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                            d.disconnect();
+                                            d.connect();
+                                            return HomePage(
+                                              bluetoothDevice: d,
+                                            );
+                                          }),
+                                        ),
+                                      );
+                                    }
+                                    return Text(snapshot.data.toString());
+                                  },
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                  ),
+                  //! Bluetooth : 5.5 hasil scan setelah proses 5.4 akan dilisten menggunakan stream disini, return stream berupa list dari seluruh scan device
+                  StreamBuilder<List<ScanResult>>(
+                    stream: FlutterBluePlus.instance.scanResults,
+                    initialData: const [],
+                    builder: (c, snapshot) {
+                      return Column(
+                        children: snapshot.data!
+                            .map(
+                              //! Bluetooth : 5.5.1 di map ke dalam widget custom ScanResultTile
+                              (r) => ScanResultTile(
+                                result: r,
+                                //! Bluetooth : 5.6.7 voidcallback ontap akan menampilkan halaman DeviceScreen yang kita connect
+                                onTap: () {
+                                  //! Bluetooth : 5.6.8 Connect ke device menggunakan method result.device.connect()
+                                  r.device.disconnect();
+                                  r.device.connect().then((_) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return HomePage(
+                                            bluetoothDevice: r.device,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  });
+                                },
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            //! Bluetooth : 5.4 tombol floatingaction button untuk melakukan scan device bluetooth yang tersedia (return data dari stream adalah bool yang berisi tentang informasi apakah sedang menjalankan proses scan atau tidak)
+            floatingActionButton: StreamBuilder<bool>(
+              //? mengambil status boolean dari isscanning
+              stream: FlutterBluePlus.instance.isScanning,
+              initialData: false,
+              builder: (c, snapshot) {
+                //? kalau snapshot true karena sedang melakukan scanning, maka akan merubah button menjadi button stop
+                if (snapshot.data!) {
+                  return FloatingActionButton(
+                    //? kalau sedang melakukan scan, memanggil fungsi stopScan untuk menghentikan scan, mengubah snapshot dari true menjadi false
+                    onPressed: () => FlutterBluePlus.instance.stopScan(),
+                    backgroundColor: Colors.red,
+                    child: const Icon(Icons.stop),
+                  );
+                  //? kalau snapshot false, maka akan melakukan scanning, ketika melakukan startScan maka snpshot akan berubah menjadi true
+                } else {
+                  return FloatingActionButton(
+                    //? memanggul fungsi startscan, mengubah snapshot dari stream menjadi true
+                    onPressed: () => FlutterBluePlus.instance.startScan(
+                      timeout: const Duration(seconds: 4),
+                    ),
+                    backgroundColor: cPurpleColor,
+                    child: const Icon(Icons.search),
+                  );
+                }
+              },
+            ),
+          );
+        }
+        return BluetoothOffScreen(
+          state: state,
+        );
+      },
     );
   }
 }
 
-//! ========================================================================================================================================================================================================================
+//! ini gapake di sini ========================================================================================================================================================================================================================
 
 //! Bluetooth : 6 ketika tombol connect di FindDeviceScreen dipanggil, maka akan diarahkan ke halaman ini
 class DeviceScreen extends StatelessWidget {
