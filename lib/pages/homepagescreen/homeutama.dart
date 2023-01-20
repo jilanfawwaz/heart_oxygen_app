@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
+import '../../services/localnotificationservice.dart';
 import '../../shared/theme.dart';
 
 class HomeUtama extends StatefulWidget {
@@ -29,6 +30,10 @@ class HomeUtama extends StatefulWidget {
 // }
 
 class _HomeUtamaState extends State<HomeUtama> {
+  bool isRendah = false;
+  bool isTinggi = false;
+  //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
+  late final LocalNotificationService service;
   /*Stream dummyData = Stream.periodic(
     const Duration(seconds: 1),
     ((i) {
@@ -49,6 +54,13 @@ class _HomeUtamaState extends State<HomeUtama> {
   int dummyValue = Random().nextInt(50) + 30;
   // late StreamSubscription _sub;
 
+  @override
+  void initState() {
+    super.initState();
+    //! Local Notification 11.2 : inisialisasi LocalNotificaitionService
+    service = LocalNotificationService();
+    service.initialize();
+  }
   /* @override
   void initState() {
     super.initState();
@@ -72,11 +84,60 @@ class _HomeUtamaState extends State<HomeUtama> {
 
   @override
   Widget build(BuildContext context) {
+    if ((widget.listStream < 85) && (widget.listStream > 0)) {
+      if (!isRendah) {
+        isRendah = true;
+        service.showNotification(
+          id: 0,
+          title: 'Heart Rate kamu rendah nih !!',
+          body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+        );
+      }
+    } else if (widget.listStream > 100) {
+      if (!isTinggi) {
+        isTinggi = true;
+        service.showNotification(
+          id: 0,
+          title: 'Heart Rate kamu rendah nih !!',
+          body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+        );
+      }
+    } else {
+      isRendah = false;
+      isTinggi = false;
+    }
     return Padding(
       padding: const EdgeInsets.all(35),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          ElevatedButton(
+            onPressed: () async {
+              //! Local Notification 13.4 : tinggal panggil deh di button
+              await service.showNotificationTimer(
+                id: 0,
+                title: 'ini judul',
+                body: 'ini Body',
+                second: 6,
+              );
+            },
+            child: const Text(
+              'Notification with Payload',
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              //! Local Notification 12 : tinggal panggil deh di button
+              await service.showNotification(
+                id: 0,
+                title: 'Heart Rate kamu rendah nih !!',
+                body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+              );
+            },
+            child: const Text(
+              'Show Local Notification',
+            ),
+          ),
           Text(
             'Connected to ${widget.nama}',
             style: cNavBarText.copyWith(

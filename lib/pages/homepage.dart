@@ -15,6 +15,7 @@ import 'package:heart_oxygen_alarm/shared/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/auth/auth_cubit.dart';
+import '../services/localnotificationservice.dart';
 import '../widget/bluetoothwidget.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   //! Fix Bug Read 1 : hapus listStream
   // Stream<List<int>>? listStream;
   BluetoothCharacteristic? c;
-  
+
   bool isCorrect = false;
 
   // late BluetoothCharacteristic c;
@@ -97,7 +98,10 @@ class _HomePageState extends State<HomePage> {
     });*/*/
     var bloc = context.read<BottompageCubit>();
 
-    Widget contentPage(int index, int heartRate,) {
+    Widget contentPage(
+      int index,
+      int heartRate,
+    ) {
       switch (index) {
         case 1:
           return const HomeMap();
@@ -117,7 +121,6 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
-            
           );
 
         case 3:
@@ -127,7 +130,6 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
-            
           );
       }
     }
@@ -313,8 +315,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context, snapshot) {
                               return snapshot.data!.length < 2
                                   ? contentPage(state, 0)
-                                  : contentPage(state,
-                                      snapshot.data![1]);
+                                  : contentPage(state, snapshot.data![1]);
                             },
                           );
                         },
