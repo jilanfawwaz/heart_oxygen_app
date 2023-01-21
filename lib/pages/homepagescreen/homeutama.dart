@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
+import '../../services/audiocontroller.dart';
 import '../../services/localnotificationservice.dart';
 import '../../shared/theme.dart';
 
@@ -32,6 +33,7 @@ class HomeUtama extends StatefulWidget {
 class _HomeUtamaState extends State<HomeUtama> {
   bool isRendah = false;
   bool isTinggi = false;
+  AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
   //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
   late final LocalNotificationService service;
   /*Stream dummyData = Stream.periodic(
@@ -84,9 +86,14 @@ class _HomeUtamaState extends State<HomeUtama> {
 
   @override
   Widget build(BuildContext context) {
-    if ((widget.listStream < 85) && (widget.listStream > 0)) {
+    if ((widget.listStream < 60) && (widget.listStream > 0)) {
       if (!isRendah) {
-        isRendah = true;
+        setState(() {
+          isRendah = true;
+          soundAlarm.stopAudio();
+          soundAlarm.playAudio();
+        });
+
         service.showNotification(
           id: 0,
           title: 'Heart Rate kamu rendah nih !!',
@@ -95,7 +102,11 @@ class _HomeUtamaState extends State<HomeUtama> {
       }
     } else if (widget.listStream > 100) {
       if (!isTinggi) {
-        isTinggi = true;
+        setState(() {
+          isTinggi = true;
+          soundAlarm.stopAudio();
+          soundAlarm.playAudio();
+        });
         service.showNotification(
           id: 0,
           title: 'Heart Rate kamu rendah nih !!',
@@ -103,105 +114,130 @@ class _HomeUtamaState extends State<HomeUtama> {
         );
       }
     } else {
-      isRendah = false;
-      isTinggi = false;
+      setState(() {
+        isRendah = false;
+        isTinggi = false;
+        soundAlarm.stopAudio();
+      });
     }
-    return Padding(
-      padding: const EdgeInsets.all(35),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              //! Local Notification 13.4 : tinggal panggil deh di button
-              await service.showNotificationTimer(
-                id: 0,
-                title: 'ini judul',
-                body: 'ini Body',
-                second: 6,
-              );
-            },
-            child: const Text(
-              'Notification with Payload',
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              //! Local Notification 12 : tinggal panggil deh di button
-              await service.showNotification(
-                id: 0,
-                title: 'Heart Rate kamu rendah nih !!',
-                body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
-              );
-            },
-            child: const Text(
-              'Show Local Notification',
-            ),
-          ),
-          Text(
-            'Connected to ${widget.nama}',
-            style: cNavBarText.copyWith(
-              fontSize: 10,
-              color: cPurpleDarkColor,
-            ),
-          ),
-          Text(
-            widget.id,
-            style: cNavBarText.copyWith(
-              fontSize: 10,
-              color: cPurpleDarkColor,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  color: cGreyColor,
-                  height: 2,
-                  margin: const EdgeInsets.only(
-                    right: 10,
-                  ),
-                ),
-              ),
-              Text(
-                'Status Kamu',
-                style: cNavBarText.copyWith(
-                  fontSize: 20,
-                  color: cPurpleDarkColor,
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  color: cGreyColor,
-                  height: 2,
-                  margin: const EdgeInsets.only(
-                    left: 10,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          //
-          //
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
+
+    return isRendah
+        ? Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: cPurpleColor,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.favorite,
-                    size: 50,
-                    color: cRedColor,
+                  Image.asset(
+                    'assets/images/sports-running-icon-2.png',
+                    width: 100,
+                    color: Colors.white,
                   ),
                   const SizedBox(
-                    width: 16,
+                    height: 40,
                   ),
-                  /*StreamBuilder<List<int>>(
+                  Text(
+                    'Heart Rate kamu ${widget.listStream} terlalu rendah, ayo bergerak !!!',
+                    textAlign: TextAlign.center,
+                    style: cTextButtonWhite,
+                  ),
+                ],
+              ),
+            ),
+          )
+        : Padding(
+            padding: const EdgeInsets.all(35),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /*ElevatedButton(
+                  onPressed: () async {
+                    soundAlarm.stopAudio();
+                  },
+                  child: const Text(
+                    'Notification with Payload',
+                  ),
+                ),*/
+                /* ElevatedButton(
+                  onPressed: () async {
+                    //! Local Notification 12 : tinggal panggil deh di button
+                    await service.showNotification(
+                      id: 0,
+                      title: 'Heart Rate kamu rendah nih !!',
+                      body:
+                          'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+                    );
+                  },
+                  child: const Text(
+                    'Show Local Notification',
+                  ),
+                ),*/
+                Text(
+                  'Connected to ${widget.nama}',
+                  style: cNavBarText.copyWith(
+                    fontSize: 10,
+                    color: cPurpleDarkColor,
+                  ),
+                ),
+                Text(
+                  widget.id,
+                  style: cNavBarText.copyWith(
+                    fontSize: 10,
+                    color: cPurpleDarkColor,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        color: cGreyColor,
+                        height: 2,
+                        margin: const EdgeInsets.only(
+                          right: 10,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Status Kamu',
+                      style: cNavBarText.copyWith(
+                        fontSize: 20,
+                        color: cPurpleDarkColor,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: cGreyColor,
+                        height: 2,
+                        margin: const EdgeInsets.only(
+                          left: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                //
+                //
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.favorite,
+                          size: 50,
+                          color: cRedColor,
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        /*StreamBuilder<List<int>>(
                     stream:
                         widget.listStream, //here we're using our char's value
                     initialData: [],
@@ -222,23 +258,23 @@ class _HomeUtamaState extends State<HomeUtama> {
                       }
                     },
                   ),*/
-                  Text(
-                    widget.listStream == 0
-                        ? 'Lakukan Scanning!'
-                        : '${widget.listStream} DPM',
-                    style: cHeader1Style.copyWith(
-                      color: cBlackColor,
-                    ),
-                  ),
-                  /*Text(
+                        Text(
+                          widget.listStream == 0
+                              ? 'Lakukan Scanning!'
+                              : '${widget.listStream} DPM',
+                          style: cHeader1Style.copyWith(
+                            color: cBlackColor,
+                          ),
+                        ),
+                        /*Text(
                     '$dummyValue DPM',
                     style: cHeader1Style.copyWith(
                       color: cBlackColor,
                     ),
                   ),*/
-                ],
-              ),
-              /*Row(
+                      ],
+                    ),
+                    /*Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(
@@ -257,33 +293,33 @@ class _HomeUtamaState extends State<HomeUtama> {
                   ),
                 ],
               )*/
-            ],
-          ),
-          //
-          //
-          const SizedBox(
-            height: 26,
-          ),
-          Text(
-            widget.listStream < 60
-                ? 'HeartRate Rendah'
-                : widget.listStream > 100
-                    ? 'HeartRate Tinggi'
-                    : 'Normal',
-            style: cNavBarText.copyWith(
-              fontSize: 20,
-              color: cPurpleDarkColor,
-            ),
-          ),
-          // Text(widget.debugAngka),
-          /*ElevatedButton(
+                  ],
+                ),
+                //
+                //
+                const SizedBox(
+                  height: 26,
+                ),
+                Text(
+                  widget.listStream < 60
+                      ? 'HeartRate Rendah'
+                      : widget.listStream > 100
+                          ? 'HeartRate Tinggi'
+                          : 'Normal',
+                  style: cNavBarText.copyWith(
+                    fontSize: 20,
+                    color: cPurpleDarkColor,
+                  ),
+                ),
+                // Text(widget.debugAngka),
+                /*ElevatedButton(
             onPressed: () {
               _sub.pause();
             },
             child: const Text('pause'),
           ),*/
-        ],
-      ),
-    );
+              ],
+            ),
+          );
   }
 }
