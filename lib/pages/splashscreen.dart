@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heart_oxygen_alarm/pages/homepage.dart';
 import 'package:heart_oxygen_alarm/pages/loginpage.dart';
 import 'package:heart_oxygen_alarm/shared/theme.dart';
+
+import '../cubit/auth/auth_cubit.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushNamedAndRemoveUntil(
             context, LoginPage.nameRoute, (route) => false);
       } else {
+        context.read<AuthCubit>().getCurrentUser(user.uid);
         Navigator.pushNamedAndRemoveUntil(
             context, FindDevicesScreen.nameRoute, (route) => false);
       }

@@ -10,18 +10,21 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
   signUp({
-    
+    required String name,
     required String username,
     required String email,
     required String password,
+    required String date,
   }) async {
     try {
       emit(AuthLoading());
 
       UserModel user = await AuthService().signUp(
+        name: name,
         email: email,
         username: username,
         password: password,
+        date: date
       );
 
       emit(AuthSuccess(user));

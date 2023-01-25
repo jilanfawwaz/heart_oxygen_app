@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heart_oxygen_alarm/cubit/auth/auth_cubit.dart';
+import 'package:intl/intl.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
 import '../../services/audiocontroller.dart';
@@ -100,7 +103,7 @@ class _HomeUtamaState extends State<HomeUtama> {
           body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
         );
       }
-    } else if (widget.listStream > 100) {
+    } else if (widget.listStream > 90) {
       if (!isTinggi) {
         setState(() {
           isTinggi = true;
@@ -109,8 +112,8 @@ class _HomeUtamaState extends State<HomeUtama> {
         });
         service.showNotification(
           id: 0,
-          title: 'Heart Rate kamu rendah nih !!',
-          body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+          title: 'Heart Rate kamu tinggi nih !!',
+          body: 'Ayo istirahat sebentar untuk menurunkan Heart Rate kamu !!!',
         );
       }
     } else {
@@ -121,38 +124,45 @@ class _HomeUtamaState extends State<HomeUtama> {
       });
     }
 
-    return isRendah
-        ? Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: cPurpleColor,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/sports-running-icon-2.png',
-                    width: 100,
-                    color: Colors.white,
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        if (state is AuthSuccess) {
+          return isRendah || isTinggi
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: cPurpleColor,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          isRendah
+                              ? 'assets/images/sports-running-icon-2.png'
+                              : 'assets/images/dudukistirahat.png',
+                          width: 100,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          isRendah
+                              ? 'Heart Rate kamu ${widget.listStream} terlalu rendah, ayo bergerak !!!'
+                              : 'Heart Rate kamu ${widget.listStream} terlalu tinggi, ayo istirahat sebentar !!!',
+                          textAlign: TextAlign.center,
+                          style: cTextButtonWhite,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    'Heart Rate kamu ${widget.listStream} terlalu rendah, ayo bergerak !!!',
-                    textAlign: TextAlign.center,
-                    style: cTextButtonWhite,
-                  ),
-                ],
-              ),
-            ),
-          )
-        : Padding(
-            padding: const EdgeInsets.all(35),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                /*ElevatedButton(
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(35),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /*ElevatedButton(
                   onPressed: () async {
                     soundAlarm.stopAudio();
                   },
@@ -160,7 +170,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                     'Notification with Payload',
                   ),
                 ),*/
-                /* ElevatedButton(
+                      /* ElevatedButton(
                   onPressed: () async {
                     //! Local Notification 12 : tinggal panggil deh di button
                     await service.showNotification(
@@ -174,70 +184,88 @@ class _HomeUtamaState extends State<HomeUtama> {
                     'Show Local Notification',
                   ),
                 ),*/
-                Text(
-                  'Connected to ${widget.nama}',
-                  style: cNavBarText.copyWith(
-                    fontSize: 10,
-                    color: cPurpleDarkColor,
-                  ),
-                ),
-                Text(
-                  widget.id,
-                  style: cNavBarText.copyWith(
-                    fontSize: 10,
-                    color: cPurpleDarkColor,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: cGreyColor,
-                        height: 2,
-                        margin: const EdgeInsets.only(
-                          right: 10,
+                      Text(
+                        'Halo : ${state.user.name} !',
+                        style: cNavBarText.copyWith(
+                          fontSize: 20,
+                          color: cPurpleDarkColor,
                         ),
                       ),
-                    ),
-                    Text(
-                      'Status Kamu',
-                      style: cNavBarText.copyWith(
-                        fontSize: 20,
-                        color: cPurpleDarkColor,
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: cGreyColor,
-                        height: 2,
-                        margin: const EdgeInsets.only(
-                          left: 10,
+                      //? konversi selisih tanggal lahir dan hari ini, lalu dapat hari dan dikonversi ke umur
+                      Text(
+                        'Umur kamu saat ini : ${((DateTime.now().difference(DateTime.parse(state.user.date)).inDays) / 360).floor()} Tahun',
+                        style: cNavBarText.copyWith(
+                          fontSize: 13,
+                          color: cPurpleDarkColor,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                //
-                //
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.favorite,
-                          size: 50,
-                          color: cRedColor,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Connected to ${widget.nama}',
+                        style: cNavBarText.copyWith(
+                          fontSize: 10,
+                          color: cPurpleDarkColor,
                         ),
-                        const SizedBox(
-                          width: 16,
+                      ),
+                      Text(
+                        widget.id,
+                        style: cNavBarText.copyWith(
+                          fontSize: 10,
+                          color: cPurpleDarkColor,
                         ),
-                        /*StreamBuilder<List<int>>(
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              color: cGreyColor,
+                              height: 2,
+                              margin: const EdgeInsets.only(
+                                right: 10,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Status Kamu',
+                            style: cNavBarText.copyWith(
+                              fontSize: 20,
+                              color: cPurpleDarkColor,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              color: cGreyColor,
+                              height: 2,
+                              margin: const EdgeInsets.only(
+                                left: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      //
+                      //
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.favorite,
+                                size: 50,
+                                color: cRedColor,
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              /*StreamBuilder<List<int>>(
                     stream:
                         widget.listStream, //here we're using our char's value
                     initialData: [],
@@ -258,23 +286,23 @@ class _HomeUtamaState extends State<HomeUtama> {
                       }
                     },
                   ),*/
-                        Text(
-                          widget.listStream == 0
-                              ? 'Lakukan Scanning!'
-                              : '${widget.listStream} DPM',
-                          style: cHeader1Style.copyWith(
-                            color: cBlackColor,
-                          ),
-                        ),
-                        /*Text(
+                              Text(
+                                widget.listStream == 0
+                                    ? 'Lakukan Scanning!'
+                                    : '${widget.listStream} DPM',
+                                style: cHeader1Style.copyWith(
+                                  color: cBlackColor,
+                                ),
+                              ),
+                              /*Text(
                     '$dummyValue DPM',
                     style: cHeader1Style.copyWith(
                       color: cBlackColor,
                     ),
                   ),*/
-                      ],
-                    ),
-                    /*Row(
+                            ],
+                          ),
+                          /*Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(
@@ -293,33 +321,38 @@ class _HomeUtamaState extends State<HomeUtama> {
                   ),
                 ],
               )*/
-                  ],
-                ),
-                //
-                //
-                const SizedBox(
-                  height: 26,
-                ),
-                Text(
-                  widget.listStream < 60
-                      ? 'HeartRate Rendah'
-                      : widget.listStream > 100
-                          ? 'HeartRate Tinggi'
-                          : 'Normal',
-                  style: cNavBarText.copyWith(
-                    fontSize: 20,
-                    color: cPurpleDarkColor,
-                  ),
-                ),
-                // Text(widget.debugAngka),
-                /*ElevatedButton(
+                        ],
+                      ),
+                      //
+                      //
+                      const SizedBox(
+                        height: 26,
+                      ),
+                      Text(
+                        widget.listStream < 60
+                            ? 'HeartRate Rendah'
+                            : widget.listStream > 100
+                                ? 'HeartRate Tinggi'
+                                : 'Normal',
+                        style: cNavBarText.copyWith(
+                          fontSize: 20,
+                          color: cPurpleDarkColor,
+                        ),
+                      ),
+                      // Text(widget.debugAngka),
+                      /*ElevatedButton(
             onPressed: () {
               _sub.pause();
             },
             child: const Text('pause'),
-          ),*/
-              ],
-            ),
-          );
+            ),*/
+                    ],
+                  ),
+                );
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
   }
 }

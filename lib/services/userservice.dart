@@ -8,8 +8,10 @@ class UserService {
   Future setUser(UserModel user) async {
     try {
       _userReference.doc(user.id).set({
+        'name': user.name,
         'username': user.username,
         'email': user.email,
+        'date': user.date,
       });
     } catch (e) {
       rethrow;
@@ -27,6 +29,8 @@ class UserService {
         username: snapshot[
             'username'], //memanggil field 'name' di id yang ada di collection 'users'
         email: snapshot['email'],
+        name: snapshot['name'],
+        date: snapshot['date'],
       );
 
       return user;

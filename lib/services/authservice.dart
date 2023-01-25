@@ -11,9 +11,11 @@ class AuthService {
 
   //! NOTE: Langkah 8:
   Future<UserModel> signUp({
+    required String name,
     required String email,
     required String username,
     required String password,
+    required String date,
   }) async {
     try {
       //! NOTE: Langkah 9:
@@ -25,8 +27,10 @@ class AuthService {
       //! NOTE: Langkah 10:
       UserModel userData = UserModel(
         id: userCreate.user!.uid,
+        name:  name,
         username: username,
         email: email,
+        date: date,
       );
 
       //! NOTE: Langkah 11:
