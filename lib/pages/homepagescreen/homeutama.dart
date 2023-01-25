@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../services/audiocontroller.dart';
 import '../../services/localnotificationservice.dart';
 import '../../shared/theme.dart';
+import '../../widget/customform.dart';
 
 class HomeUtama extends StatefulWidget {
   const HomeUtama(
@@ -37,7 +38,8 @@ class _HomeUtamaState extends State<HomeUtama> {
   bool isRendah = false;
   bool isTinggi = false;
   AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
-  //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
+  TextEditingController spoController =
+      TextEditingController(); //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
   late final LocalNotificationService service;
   /*Stream dummyData = Stream.periodic(
     const Duration(seconds: 1),
@@ -184,20 +186,40 @@ class _HomeUtamaState extends State<HomeUtama> {
                     'Show Local Notification',
                   ),
                 ),*/
-                      Text(
-                        'Halo : ${state.user.name} !',
-                        style: cNavBarText.copyWith(
-                          fontSize: 20,
-                          color: cPurpleDarkColor,
-                        ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 25,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Halo : ${state.user.name} !',
+                            style: cNavBarText.copyWith(
+                              fontSize: 20,
+                              color: cPurpleDarkColor,
+                            ),
+                          ),
+                        ],
                       ),
                       //? konversi selisih tanggal lahir dan hari ini, lalu dapat hari dan dikonversi ke umur
-                      Text(
-                        'Umur kamu saat ini : ${((DateTime.now().difference(DateTime.parse(state.user.date)).inDays) / 360).floor()} Tahun',
-                        style: cNavBarText.copyWith(
-                          fontSize: 13,
-                          color: cPurpleDarkColor,
-                        ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 20,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Umur kamu saat ini : ${((DateTime.now().difference(DateTime.parse(state.user.date)).inDays) / 360).floor()} Tahun',
+                            style: cNavBarText.copyWith(
+                              fontSize: 13,
+                              color: cPurpleDarkColor,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 20,
@@ -252,7 +274,6 @@ class _HomeUtamaState extends State<HomeUtama> {
                       //
                       //
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.min,
@@ -266,26 +287,26 @@ class _HomeUtamaState extends State<HomeUtama> {
                                 width: 16,
                               ),
                               /*StreamBuilder<List<int>>(
-                    stream:
-                        widget.listStream, //here we're using our char's value
-                    initialData: [],
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<int>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        //In this method we'll interpret received data
-                        // interpretReceivedData(currentValue);
+                                  stream:
+                                      widget.listStream, //here we're using our char's value
+                                  initialData: [],
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<List<int>> snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.active) {
+                                      //In this method we'll interpret received data
+                                      // interpretReceivedData(currentValue);
 
-                        return Text(
-                          snapshot.data.toString() + ' DPM',
-                          style: cHeader1Style.copyWith(
-                            color: cBlackColor,
-                          ),
-                        );
-                      } else {
-                        return SizedBox();
-                      }
-                    },
-                  ),*/
+                                      return Text(
+                                        snapshot.data.toString() + ' DPM',
+                                        style: cHeader1Style.copyWith(
+                                          color: cBlackColor,
+                                        ),
+                                      );
+                                    } else {
+                                      return SizedBox();
+                                    }
+                                  },
+                                ),*/
                               Text(
                                 widget.listStream == 0
                                     ? 'Lakukan Scanning!'
@@ -294,41 +315,101 @@ class _HomeUtamaState extends State<HomeUtama> {
                                   color: cBlackColor,
                                 ),
                               ),
-                              /*Text(
-                    '$dummyValue DPM',
-                    style: cHeader1Style.copyWith(
-                      color: cBlackColor,
-                    ),
-                  ),*/
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+
+                          //? TextField untuk input SPO
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: spoController,
+                                  keyboardType: TextInputType.number,
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  textAlign: TextAlign.center,
+                                  onChanged: (value) {
+                                    setState(() {});
+                                  },
+                                  textAlignVertical: TextAlignVertical.center,
+                                  decoration: InputDecoration(
+                                    hintText: 'Masukkan SPO anda',
+                                    hintStyle: cTextButtonBlack,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: const BorderSide(
+                                        width: 2,
+                                        color: cPurpleColor,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: const BorderSide(
+                                        width: 3,
+                                        color: cPurpleDarkColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                '%',
+                                style: cHeader1Style.copyWith(
+                                  color: cBlackColor,
+                                ),
+                              ),
                             ],
                           ),
                           /*Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.favorite,
-                    size: 50,
-                    color: cRedColor,
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Text(
-                    '${dummyValue + Random().nextInt(7)} %',
-                    style: cHeader1Style.copyWith(
-                      color: cBlackColor,
-                    ),
-                  ),
-                ],
-              )*/
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.favorite,
+                                size: 50,
+                                color: cRedColor,
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Text(
+                                '${dummyValue + Random().nextInt(7)} %',
+                                style: cHeader1Style.copyWith(
+                                  color: cBlackColor,
+                                ),
+                              ),
+                            ],
+                          )*/
                         ],
                       ),
                       //
                       //
                       const SizedBox(
-                        height: 26,
+                        height: 10,
                       ),
                       Text(
+                        spoController.text == ''
+                            ? 'Masukkan Nilai SPO'
+                            : int.parse(spoController.text) < 95
+                                ? 'SPO Rendah'
+                                : 'SPO Normal',
+                        style: cNavBarText.copyWith(
+                          fontSize: 20,
+                          color: int.parse(spoController.text) < 95
+                              ? cRedColor
+                              : cPurpleColor,
+                        ),
+                      ),
+                      //? untuk menampilkan status heartrate rendah/normal/tinggi, tapi karena sudah ada alarm, jadi ini gakepake
+                      /*Text(
                         widget.listStream < 60
                             ? 'HeartRate Rendah'
                             : widget.listStream > 100
@@ -338,7 +419,8 @@ class _HomeUtamaState extends State<HomeUtama> {
                           fontSize: 20,
                           color: cPurpleDarkColor,
                         ),
-                      ),
+                      ),*/
+
                       // Text(widget.debugAngka),
                       /*ElevatedButton(
             onPressed: () {
