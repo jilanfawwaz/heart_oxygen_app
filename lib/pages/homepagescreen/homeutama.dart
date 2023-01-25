@@ -333,7 +333,14 @@ class _HomeUtamaState extends State<HomeUtama> {
                                   autocorrect: false,
                                   textAlign: TextAlign.center,
                                   onChanged: (value) {
-                                    setState(() {});
+                                    setState(() {
+                                      if (spoController.text != '') {
+                                        if (int.parse(spoController.text) >
+                                            100) {
+                                          spoController.text = '100';
+                                        }
+                                      }
+                                    });
                                   },
                                   textAlignVertical: TextAlignVertical.center,
                                   decoration: InputDecoration(
@@ -403,9 +410,11 @@ class _HomeUtamaState extends State<HomeUtama> {
                                 : 'SPO Normal',
                         style: cNavBarText.copyWith(
                           fontSize: 20,
-                          color: int.parse(spoController.text) < 95
-                              ? cRedColor
-                              : cPurpleColor,
+                          color: spoController.text == ''
+                              ? cPurpleColor
+                              : int.parse(spoController.text) < 95
+                                  ? cRedColor
+                                  : cPurpleColor,
                         ),
                       ),
                       //? untuk menampilkan status heartrate rendah/normal/tinggi, tapi karena sudah ada alarm, jadi ini gakepake
