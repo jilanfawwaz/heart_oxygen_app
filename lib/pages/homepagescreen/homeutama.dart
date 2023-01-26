@@ -35,6 +35,7 @@ class HomeUtama extends StatefulWidget {
 // }
 
 class _HomeUtamaState extends State<HomeUtama> {
+  int umur = -1;
   bool isRendah = false;
   bool isTinggi = false;
   AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
@@ -91,44 +92,141 @@ class _HomeUtamaState extends State<HomeUtama> {
 
   @override
   Widget build(BuildContext context) {
-    if ((widget.listStream < 60) && (widget.listStream > 0)) {
-      if (!isRendah) {
-        setState(() {
-          isRendah = true;
-          soundAlarm.stopAudio();
-          soundAlarm.playAudio();
-        });
+    if (umur != -1) {
+      //? umur dibawah 2 tahun, HR 80-160
+      if (umur < 2) {
+        //? heart rate rendah
+        if ((widget.listStream < 80) && (widget.listStream > 0)) {
+          if (!isRendah) {
+            setState(() {
+              isRendah = true;
+              soundAlarm.stopAudio();
+              soundAlarm.playAudio();
+            });
 
-        service.showNotification(
-          id: 0,
-          title: 'Heart Rate kamu rendah nih !!',
-          body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
-        );
+            service.showNotification(
+              id: 0,
+              title: 'Heart Rate kamu rendah nih !!',
+              body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+            );
+          }
+          //? heart rate tinggi
+        } else if (widget.listStream > 160) {
+          if (!isTinggi) {
+            setState(() {
+              isTinggi = true;
+              soundAlarm.stopAudio();
+              soundAlarm.playAudio();
+            });
+            service.showNotification(
+              id: 0,
+              title: 'Heart Rate kamu tinggi nih !!',
+              body:
+                  'Ayo istirahat sebentar untuk menurunkan Heart Rate kamu !!!',
+            );
+          }
+          //? heart rate normal
+        } else {
+          setState(() {
+            isRendah = false;
+            isTinggi = false;
+            soundAlarm.stopAudio();
+          });
+        }
       }
-    } else if (widget.listStream > 90) {
-      if (!isTinggi) {
-        setState(() {
-          isTinggi = true;
-          soundAlarm.stopAudio();
-          soundAlarm.playAudio();
-        });
-        service.showNotification(
-          id: 0,
-          title: 'Heart Rate kamu tinggi nih !!',
-          body: 'Ayo istirahat sebentar untuk menurunkan Heart Rate kamu !!!',
-        );
+      //? umur 2-10 tahun, HR 70-120
+      else if (umur >= 2 && umur <= 10) {
+        //? heart rate rendah
+        if ((widget.listStream < 70) && (widget.listStream > 0)) {
+          if (!isRendah) {
+            setState(() {
+              isRendah = true;
+              soundAlarm.stopAudio();
+              soundAlarm.playAudio();
+            });
+
+            service.showNotification(
+              id: 0,
+              title: 'Heart Rate kamu rendah nih !!',
+              body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+            );
+          }
+          //? heart rate tinggi
+        } else if (widget.listStream > 120) {
+          if (!isTinggi) {
+            setState(() {
+              isTinggi = true;
+              soundAlarm.stopAudio();
+              soundAlarm.playAudio();
+            });
+            service.showNotification(
+              id: 0,
+              title: 'Heart Rate kamu tinggi nih !!',
+              body:
+                  'Ayo istirahat sebentar untuk menurunkan Heart Rate kamu !!!',
+            );
+          }
+          //? heart rate normal
+        } else {
+          setState(() {
+            isRendah = false;
+            isTinggi = false;
+            soundAlarm.stopAudio();
+          });
+        }
       }
-    } else {
-      setState(() {
-        isRendah = false;
-        isTinggi = false;
-        soundAlarm.stopAudio();
-      });
+      //? umur 11 tahun keatas, HR 60-100
+      else {
+        //? heart rate rendah
+        if ((widget.listStream < 60) && (widget.listStream > 0)) {
+          if (!isRendah) {
+            setState(() {
+              isRendah = true;
+              soundAlarm.stopAudio();
+              soundAlarm.playAudio();
+            });
+
+            service.showNotification(
+              id: 0,
+              title: 'Heart Rate kamu rendah nih !!',
+              body: 'Ayo bergerak untuk meningkatkan Heart Rate kamu !!!',
+            );
+          }
+          //? heart rate tinggi
+        } else if (widget.listStream > 100) {
+          if (!isTinggi) {
+            setState(() {
+              isTinggi = true;
+              soundAlarm.stopAudio();
+              soundAlarm.playAudio();
+            });
+            service.showNotification(
+              id: 0,
+              title: 'Heart Rate kamu tinggi nih !!',
+              body:
+                  'Ayo istirahat sebentar untuk menurunkan Heart Rate kamu !!!',
+            );
+          }
+          //? heart rate normal
+        } else {
+          setState(() {
+            isRendah = false;
+            isTinggi = false;
+            soundAlarm.stopAudio();
+          });
+        }
+      }
     }
 
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         if (state is AuthSuccess) {
+          umur = ((DateTime.now()
+                      .difference(DateTime.parse(state.user.date))
+                      .inDays) /
+                  360)
+              .floor();
+
           return isRendah || isTinggi
               ? Container(
                   width: double.infinity,
@@ -405,9 +503,21 @@ class _HomeUtamaState extends State<HomeUtama> {
                       Text(
                         spoController.text == ''
                             ? 'Masukkan Nilai SPO'
-                            : int.parse(spoController.text) < 95
-                                ? 'SPO Rendah'
-                                : 'SPO Normal',
+                            //? kalau umur di atas 5 tahun, spo kisaran 95-100
+                            : (((DateTime.now()
+                                                .difference(DateTime.parse(
+                                                    state.user.date))
+                                                .inDays) /
+                                            360)
+                                        .floor() >=
+                                    5)
+                                ? int.parse(spoController.text) < 95
+                                    ? 'SPO Rendah'
+                                    : 'SPO Normal'
+                                //? kalau umur di bawah 5 tahun, spo kisaran 93-100
+                                : int.parse(spoController.text) < 93
+                                    ? 'SPO Rendah'
+                                    : 'SPO Normal',
                         style: cNavBarText.copyWith(
                           fontSize: 20,
                           color: spoController.text == ''
