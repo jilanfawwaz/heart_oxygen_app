@@ -9,7 +9,7 @@ class AudioController {
 
   setAudio() {
     sound.setSourceAsset('audio/$namaSound.mp3');
-    sound.setReleaseMode(ReleaseMode.stop);
+    sound.setReleaseMode(ReleaseMode.loop);
   }
 
   playAudio() {

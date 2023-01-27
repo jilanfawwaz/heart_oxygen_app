@@ -12,9 +12,9 @@ class LoginPage extends StatelessWidget {
   static const nameRoute = '/loginpage';
   LoginPage({super.key});
   final TextEditingController emailController =
-      TextEditingController(text: 'usertest3@gmail.com');
+      TextEditingController();
   final TextEditingController passwordController =
-      TextEditingController(text: 'usertest3');
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {

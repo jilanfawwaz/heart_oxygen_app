@@ -367,7 +367,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                         ],
                       ),
                       const SizedBox(
-                        height: 40,
+                        height: 10,
                       ),
                       //
                       //
@@ -425,6 +425,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  enabled: widget.listStream != 0,
                                   controller: spoController,
                                   keyboardType: TextInputType.number,
                                   enableSuggestions: false,
@@ -442,6 +443,13 @@ class _HomeUtamaState extends State<HomeUtama> {
                                   },
                                   textAlignVertical: TextAlignVertical.center,
                                   decoration: InputDecoration(
+                                    disabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        width: 2,
+                                        color: Colors.grey.shade300,
+                                      ),
+                                    ),
                                     hintText: 'Masukkan SPO anda',
                                     hintStyle: cTextButtonBlack,
                                     contentPadding: const EdgeInsets.symmetric(
@@ -469,7 +477,9 @@ class _HomeUtamaState extends State<HomeUtama> {
                               Text(
                                 '%',
                                 style: cHeader1Style.copyWith(
-                                  color: cBlackColor,
+                                  color: widget.listStream == 0
+                                      ? Colors.grey.shade300
+                                      : cBlackColor,
                                 ),
                               ),
                             ],
@@ -522,9 +532,19 @@ class _HomeUtamaState extends State<HomeUtama> {
                           fontSize: 20,
                           color: spoController.text == ''
                               ? cPurpleColor
-                              : int.parse(spoController.text) < 95
-                                  ? cRedColor
-                                  : cPurpleColor,
+                              : (((DateTime.now()
+                                                  .difference(DateTime.parse(
+                                                      state.user.date))
+                                                  .inDays) /
+                                              360)
+                                          .floor() >=
+                                      5)
+                                  ? int.parse(spoController.text) < 95
+                                      ? cRedColor
+                                      : cPurpleColor
+                                  : int.parse(spoController.text) < 93
+                                      ? cRedColor
+                                      : cPurpleColor,
                         ),
                       ),
                       //? untuk menampilkan status heartrate rendah/normal/tinggi, tapi karena sudah ada alarm, jadi ini gakepake
