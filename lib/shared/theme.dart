@@ -25,6 +25,12 @@ TextStyle cHeader1Style = GoogleFonts.poppins(
   fontWeight: semiBold,
 );
 
+TextStyle cLatosBlackSemibold18 = GoogleFonts.lato(
+  fontSize: 18,
+  color: Color(0xff000000),
+  fontWeight: semiBold,
+);
+
 TextStyle cTextButtonBlack = GoogleFonts.poppins(
   color: cBlackColor,
   fontSize: 12,

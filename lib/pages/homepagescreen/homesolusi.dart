@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../model/newsmodel.dart';
+import '../../widget/newscardwidget.dart';
+
 class HomeSolusi extends StatelessWidget {
-  const HomeSolusi({Key? key}) : super(key: key);
+   HomeSolusi({Key? key}) : super(key: key);
+
+  List<NewsModel> dataBerita = NewsData.listDataBerita;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text('Halaman Solusi'),
-        ],
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: dataBerita.length,
+        itemBuilder: (BuildContext context, int i) {
+          return NewsCardWidget(
+            title: dataBerita[i].title,
+            deskripsi: dataBerita[i].deskripsi,
+            image: dataBerita[i].image,
+            url: dataBerita[i].url,
+          );
+        },
       ),
     );
   }

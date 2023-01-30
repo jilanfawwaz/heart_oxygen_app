@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
           );
 
         case 3:
-          return const HomeSolusi();
+          return HomeSolusi();
         default:
           return HomeUtama(
             nama: widget.bluetoothDevice.name,

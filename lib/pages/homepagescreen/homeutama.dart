@@ -128,6 +128,14 @@ class _HomeUtamaState extends State<HomeUtama> {
           //? heart rate normal
         } else {
           setState(() {
+            if (isRendah || isTinggi) {
+              service.showNotification(
+                id: 0,
+                title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
+                body:
+                    'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
+              );
+            }
             isRendah = false;
             isTinggi = false;
             soundAlarm.stopAudio();
@@ -168,6 +176,14 @@ class _HomeUtamaState extends State<HomeUtama> {
           }
           //? heart rate normal
         } else {
+          if (isRendah || isTinggi) {
+            service.showNotification(
+              id: 0,
+              title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
+              body:
+                  'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
+            );
+          }
           setState(() {
             isRendah = false;
             isTinggi = false;
@@ -209,6 +225,14 @@ class _HomeUtamaState extends State<HomeUtama> {
           }
           //? heart rate normal
         } else {
+          if (isRendah || isTinggi) {
+            service.showNotification(
+              id: 0,
+              title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
+              body:
+                  'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
+            );
+          }
           setState(() {
             isRendah = false;
             isTinggi = false;
