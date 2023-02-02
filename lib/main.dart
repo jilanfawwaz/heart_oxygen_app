@@ -6,6 +6,7 @@ import 'package:heart_oxygen_alarm/cubit/auth/auth_cubit.dart';
 import 'package:heart_oxygen_alarm/cubit/bottompage/bottompage_cubit.dart';
 import 'package:heart_oxygen_alarm/cubit/map/map_cubit.dart';
 import 'package:heart_oxygen_alarm/pages/homepage.dart';
+import 'package:heart_oxygen_alarm/pages/homepagescreen/homediagram.dart';
 import 'package:heart_oxygen_alarm/pages/loginpage.dart';
 import 'package:heart_oxygen_alarm/pages/registerpage.dart';
 import 'package:heart_oxygen_alarm/pages/splashscreen.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
           RegisterPage.nameRoute: (context) => RegisterPage(),
           // HomePage.nameRoute: (context) => HomePage(),
           FindDevicesScreen.nameRoute: (context) => const FindDevicesScreen(),
+          HomeDiagram.nameRoute:(context) => const HomeDiagram(),
         },
       ),
     );

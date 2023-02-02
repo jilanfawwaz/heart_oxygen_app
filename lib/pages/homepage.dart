@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:heart_oxygen_alarm/cubit/bottompage/bottompage_cubit.dart';
 import 'package:heart_oxygen_alarm/pages/bluetoothoffscreen.dart';
+import 'package:heart_oxygen_alarm/pages/homepagescreen/homediagram.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homemap.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homesolusi.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homeutama.dart';
@@ -77,6 +78,8 @@ class _HomePageState extends State<HomePage> {
 
     discoverServices();
   }
+
+  final List<int> historyHeartRate = [];
 
   @override
   Widget build(BuildContext context) {
@@ -254,31 +257,46 @@ class _HomePageState extends State<HomePage> {
                       SafeArea(
                         child: Align(
                           alignment: Alignment.topLeft,
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return const FindDevicesScreen();
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const FindDevicesScreen();
+                                    },
+                                  ));
                                 },
-                              ));
-                            },
-                            icon: StreamBuilder(
-                              stream: widget.bluetoothDevice.state,
-                              initialData: BluetoothDeviceState.connecting,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot snapshot) {
-                                return snapshot.data ==
-                                        BluetoothDeviceState.connected
-                                    ? const Icon(
-                                        Icons.bluetooth_connected,
-                                        color: cPurpleColor,
-                                      )
-                                    : const Icon(
-                                        Icons.bluetooth_disabled,
-                                        color: cPurpleColor,
-                                      );
-                              },
-                            ),
+                                icon: StreamBuilder(
+                                  stream: widget.bluetoothDevice.state,
+                                  initialData: BluetoothDeviceState.connecting,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    return snapshot.data ==
+                                            BluetoothDeviceState.connected
+                                        ? const Icon(
+                                            Icons.bluetooth_connected,
+                                            color: cPurpleColor,
+                                          )
+                                        : const Icon(
+                                            Icons.bluetooth_disabled,
+                                            color: cPurpleColor,
+                                          );
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, HomeDiagram.nameRoute,
+                                      arguments: historyHeartRate);
+                                },
+                                icon: const Icon(
+                                  Icons.query_stats_sharp,
+                                  color: cPurpleColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -313,6 +331,10 @@ class _HomePageState extends State<HomePage> {
                             stream: c?.value,
                             initialData: const [],
                             builder: (context, snapshot) {
+                              if (snapshot.data!.length >= 2) {
+                                historyHeartRate.add(snapshot.data![1]);
+                              }
+                              print('masuk : ${historyHeartRate}');
                               return snapshot.data!.length < 2
                                   ? contentPage(state, 0)
                                   : contentPage(state, snapshot.data![1]);

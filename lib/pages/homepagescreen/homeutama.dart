@@ -12,11 +12,12 @@ import '../../shared/theme.dart';
 import '../../widget/customform.dart';
 
 class HomeUtama extends StatefulWidget {
-  const HomeUtama(
-      {required this.nama,
-      required this.id,
-      required this.listStream,
-      super.key});
+  const HomeUtama({
+    required this.nama,
+    required this.id,
+    required this.listStream,
+    super.key,
+  });
   final String nama;
   final String id;
   // final List<BluetoothService> services;
@@ -35,6 +36,7 @@ class HomeUtama extends StatefulWidget {
 // }
 
 class _HomeUtamaState extends State<HomeUtama> {
+  
   int umur = -1;
   bool isRendah = false;
   bool isTinggi = false;
@@ -92,6 +94,7 @@ class _HomeUtamaState extends State<HomeUtama> {
 
   @override
   Widget build(BuildContext context) {
+    
     if (umur != -1) {
       //? umur dibawah 2 tahun, HR 80-160
       if (umur < 2) {
