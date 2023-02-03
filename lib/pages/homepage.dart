@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:heart_oxygen_alarm/cubit/bottompage/bottompage_cubit.dart';
 import 'package:heart_oxygen_alarm/pages/bluetoothoffscreen.dart';
+import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanprofil.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homediagram.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homemap.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homesolusi.dart';
@@ -213,7 +214,13 @@ class _HomePageState extends State<HomePage> {
                   )
                 : Stack(
                     children: [
-                      Image.asset('assets/images/headerhome.png'),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, HalamanProfile.nameRoute);
+                        },
+                        child: Image.asset('assets/images/headerhome.png'),
+                      ),
                       SafeArea(
                         child: Align(
                           alignment: Alignment.topRight,
@@ -424,6 +431,7 @@ class FindDevicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print('masuk 2');
+    
 
     return StreamBuilder<BluetoothState>(
       stream: FlutterBluePlus.instance.state,

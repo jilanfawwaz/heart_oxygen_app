@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:heart_oxygen_alarm/shared/theme.dart';
+import 'package:heart_oxygen_alarm/model/newsmakananolahraga.dart';
 
 import '../../model/newsmodel.dart';
+import '../../shared/theme.dart';
 import '../../widget/newscardwidget.dart';
 
-class HomeSolusi extends StatelessWidget {
-  HomeSolusi({Key? key}) : super(key: key);
+class HalamanMakananDanOlahraga extends StatelessWidget {
+  HalamanMakananDanOlahraga({super.key});
 
-  List<NewsModel> dataBerita = NewsData.listDataBerita;
+  static const nameRoute = '/halamanmakanandanminuman';
+
+  final List<NewsMakananOlahragaModel> dataBerita =
+      NewsMakananOlahragaData.listDataBerita;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,7 @@ class HomeSolusi extends StatelessWidget {
             height: 70,
           ),
           Text(
-            'Solusi untuk jantung dan SPO',
+            'Tips Makanan dan Olahraga',
             style: cLatosBlackSemibold18,
           ),
           const SizedBox(

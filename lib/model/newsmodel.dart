@@ -71,7 +71,7 @@ class NewsData {
           'https://akcdn.detik.net.id/visual/2021/07/08/oximeter-dok-freepik_169.png?w=715&q=90',
     ),
     NewsModel(
-      title: 'Ini Nilai Saturasi Oksigen Normal dan Cara Meningkatkannya',
+      title: '10 Makanan Sehat untuk Jantung yang Sebaiknya Dikonsumsi',
       deskripsi:
           'Bagi penderita penyakit jantung, ataupun yang ingin mencegahnya, memperbaiki pola hidup perlu diperhatikan. Salah satunya yaitu mengonsumsi makanan sehat untuk jantung. Berbicara mengenai makanan sehat untuk penderita jantung, Anda dapat memilih makanan yang mengandung fitonutrien pada buah-buahan dan tumbuhan. Senyawa ini membantu jantung bekerja lebih optimal.',
       url:

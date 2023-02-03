@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heart_oxygen_alarm/cubit/auth/auth_cubit.dart';
+import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanmakanandanolahraga.dart';
 import 'package:intl/intl.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
@@ -36,7 +37,6 @@ class HomeUtama extends StatefulWidget {
 // }
 
 class _HomeUtamaState extends State<HomeUtama> {
-  
   int umur = -1;
   bool isRendah = false;
   bool isTinggi = false;
@@ -70,6 +70,8 @@ class _HomeUtamaState extends State<HomeUtama> {
     //! Local Notification 11.2 : inisialisasi LocalNotificaitionService
     service = LocalNotificationService();
     service.initialize();
+
+    listenToNotification();
   }
   /* @override
   void initState() {
@@ -90,11 +92,11 @@ class _HomeUtamaState extends State<HomeUtama> {
     // _sub.cancel();
 
     super.dispose();
+    service.onNotificationClick.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    
     if (umur != -1) {
       //? umur dibawah 2 tahun, HR 80-160
       if (umur < 2) {
@@ -132,12 +134,18 @@ class _HomeUtamaState extends State<HomeUtama> {
         } else {
           setState(() {
             if (isRendah || isTinggi) {
-              service.showNotification(
+              service.showNotificationPayload(
+                  id: 0,
+                  title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
+                  body:
+                      'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
+                  payload: '-');
+              /*service.showNotification(
                 id: 0,
                 title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
                 body:
                     'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
-              );
+              );*/
             }
             isRendah = false;
             isTinggi = false;
@@ -180,12 +188,18 @@ class _HomeUtamaState extends State<HomeUtama> {
           //? heart rate normal
         } else {
           if (isRendah || isTinggi) {
-            service.showNotification(
+            service.showNotificationPayload(
+                id: 0,
+                title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
+                body:
+                    'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
+                payload: '-');
+            /*service.showNotification(
               id: 0,
               title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
               body:
                   'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
-            );
+            );*/
           }
           setState(() {
             isRendah = false;
@@ -229,12 +243,18 @@ class _HomeUtamaState extends State<HomeUtama> {
           //? heart rate normal
         } else {
           if (isRendah || isTinggi) {
-            service.showNotification(
+            service.showNotificationPayload(
+                id: 0,
+                title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
+                body:
+                    'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
+                payload: '-');
+            /*service.showNotification(
               id: 0,
               title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
               body:
                   'Untuk selalu menjaga kesehatan jantung, jangan lupa untuk selalu rutin berolahraga!',
-            );
+            );*/
           }
           setState(() {
             isRendah = false;
@@ -602,5 +622,27 @@ class _HomeUtamaState extends State<HomeUtama> {
         }
       },
     );
+  }
+
+  listenToNotification() {
+    service.onNotificationClick.stream.listen((event) {
+      print('masuk2');
+      print(event);
+      onNotificationListener(event);
+    });
+  }
+
+//! Local Notification 14.5 :
+  onNotificationListener(String? payload) {
+    if (payload != null && payload.isNotEmpty) {
+      print('Payload Masuk');
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HalamanMakananDanOlahraga(),
+        ),
+      );
+    }
   }
 }
