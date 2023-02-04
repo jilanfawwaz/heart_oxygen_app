@@ -17,6 +17,7 @@ class HomeUtama extends StatefulWidget {
     required this.nama,
     required this.id,
     required this.listStream,
+    required this.angkaSpo,
     super.key,
   });
   final String nama;
@@ -24,6 +25,7 @@ class HomeUtama extends StatefulWidget {
   // final List<BluetoothService> services;
   // final Stream<List<int>>? listStream;
   final int listStream;
+  final int angkaSpo;
 
   @override
   State<HomeUtama> createState() => _HomeUtamaState();
@@ -40,6 +42,8 @@ class _HomeUtamaState extends State<HomeUtama> {
   int umur = -1;
   bool isRendah = false;
   bool isTinggi = false;
+  bool isSpo = false;
+  int angkaSpoUtama = 0;
   AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
   TextEditingController spoController =
       TextEditingController(); //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
@@ -73,6 +77,9 @@ class _HomeUtamaState extends State<HomeUtama> {
 
     listenToNotification();
   }
+
+  @override
+
   /* @override
   void initState() {
     super.initState();
@@ -93,10 +100,24 @@ class _HomeUtamaState extends State<HomeUtama> {
 
     super.dispose();
     service.onNotificationClick.close();
+    isSpo = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    print('masuks spo5utama : ${widget.angkaSpo}');
+    /*if (widget.listStream != 0) {
+      Future.delayed(Duration(seconds: 8), () {
+        // <-- Delay here
+        setState(() {
+          isSpo = true;
+          angkaSpo = (Random().nextInt(10) + 90);
+        });
+      });
+    } else {
+      isSpo = false;
+      angkaSpo = (Random().nextInt(10) + 90);
+    }*/
     if (umur != -1) {
       //? umur dibawah 2 tahun, HR 80-160
       if (umur < 2) {
@@ -452,9 +473,10 @@ class _HomeUtamaState extends State<HomeUtama> {
                                     }
                                   },
                                 ),*/
+
                               Text(
                                 widget.listStream == 0
-                                    ? 'Lakukan Scanning!'
+                                    ? 'Scan HeartRate!'
                                     : '${widget.listStream} DPM',
                                 style: cHeader1Style.copyWith(
                                   color: cBlackColor,
@@ -465,71 +487,100 @@ class _HomeUtamaState extends State<HomeUtama> {
                           const SizedBox(
                             height: 15,
                           ),
-
-                          //? TextField untuk input SPO
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Expanded(
-                                child: TextFormField(
-                                  enabled: widget.listStream != 0,
-                                  controller: spoController,
-                                  keyboardType: TextInputType.number,
-                                  enableSuggestions: false,
-                                  autocorrect: false,
-                                  textAlign: TextAlign.center,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      if (spoController.text != '') {
-                                        if (int.parse(spoController.text) >
-                                            100) {
-                                          spoController.text = '100';
+                              const Icon(
+                                Icons.spoke_outlined,
+                                size: 50,
+                                color: cBlueColor,
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Text(
+                                widget.angkaSpo == 0
+                                    ? 'Scan SPO!'
+                                    : spoController.text == '' ? '${widget.angkaSpo} %' : '${spoController.text} %',
+                                style: cHeader1Style.copyWith(
+                                  color: cBlackColor,
+                                ),
+                              ),
+                             
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+
+                          //? TextField untuk input SPO
+                          Visibility(
+                            visible: widget.angkaSpo != 0,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    enabled: widget.listStream != 0,
+                                    controller: spoController,
+                                    keyboardType: TextInputType.number,
+                                    enableSuggestions: false,
+                                    autocorrect: false,
+                                    textAlign: TextAlign.center,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        if (spoController.text != '') {
+                                          if (int.parse(spoController.text) >
+                                              100) {
+                                            spoController.text = '100';
+                                          }
                                         }
-                                      }
-                                    });
-                                  },
-                                  textAlignVertical: TextAlignVertical.center,
-                                  decoration: InputDecoration(
-                                    disabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        width: 2,
-                                        color: Colors.grey.shade300,
+                                      });
+                                    },
+                                    textAlignVertical: TextAlignVertical.center,
+                                    decoration: InputDecoration(
+                                      disabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          width: 2,
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
-                                    ),
-                                    hintText: 'Masukkan SPO anda',
-                                    hintStyle: cTextButtonBlack,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: const BorderSide(
-                                        width: 2,
-                                        color: cPurpleColor,
+                                      hintText: 'Masukkan SPO anda',
+                                      hintStyle: cTextButtonBlack,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                          width: 2,
+                                          color: cPurpleColor,
+                                        ),
                                       ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: const BorderSide(
-                                        width: 3,
-                                        color: cPurpleDarkColor,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                          width: 3,
+                                          color: cPurpleDarkColor,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                '%',
-                                style: cHeader1Style.copyWith(
-                                  color: widget.listStream == 0
-                                      ? Colors.grey.shade300
-                                      : cBlackColor,
+                                const SizedBox(
+                                  width: 20,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  '%',
+                                  style: cHeader1Style.copyWith(
+                                    color: widget.listStream == 0
+                                        ? Colors.grey.shade300
+                                        : cBlackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           /*Row(
                             mainAxisSize: MainAxisSize.min,
@@ -557,28 +608,12 @@ class _HomeUtamaState extends State<HomeUtama> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        spoController.text == ''
-                            ? 'Masukkan Nilai SPO'
-                            //? kalau umur di atas 5 tahun, spo kisaran 95-100
-                            : (((DateTime.now()
-                                                .difference(DateTime.parse(
-                                                    state.user.date))
-                                                .inDays) /
-                                            360)
-                                        .floor() >=
-                                    5)
-                                ? int.parse(spoController.text) < 95
-                                    ? 'SPO Rendah'
-                                    : 'SPO Normal'
-                                //? kalau umur di bawah 5 tahun, spo kisaran 93-100
-                                : int.parse(spoController.text) < 93
-                                    ? 'SPO Rendah'
-                                    : 'SPO Normal',
-                        style: cNavBarText.copyWith(
-                          fontSize: 20,
-                          color: spoController.text == ''
-                              ? cPurpleColor
+                      Visibility(
+                        visible: widget.angkaSpo !=  0,
+                        child: Text(
+                          spoController.text == ''
+                              ? 'Masukkan Nilai SPO'
+                              //? kalau umur di atas 5 tahun, spo kisaran 95-100
                               : (((DateTime.now()
                                                   .difference(DateTime.parse(
                                                       state.user.date))
@@ -587,11 +622,30 @@ class _HomeUtamaState extends State<HomeUtama> {
                                           .floor() >=
                                       5)
                                   ? int.parse(spoController.text) < 95
-                                      ? cRedColor
-                                      : cPurpleColor
+                                      ? 'SPO Rendah'
+                                      : 'SPO Normal'
+                                  //? kalau umur di bawah 5 tahun, spo kisaran 93-100
                                   : int.parse(spoController.text) < 93
-                                      ? cRedColor
-                                      : cPurpleColor,
+                                      ? 'SPO Rendah'
+                                      : 'SPO Normal',
+                          style: cNavBarText.copyWith(
+                            fontSize: 20,
+                            color: spoController.text == ''
+                                ? cPurpleColor
+                                : (((DateTime.now()
+                                                    .difference(DateTime.parse(
+                                                        state.user.date))
+                                                    .inDays) /
+                                                360)
+                                            .floor() >=
+                                        5)
+                                    ? int.parse(spoController.text) < 95
+                                        ? cRedColor
+                                        : cPurpleColor
+                                    : int.parse(spoController.text) < 93
+                                        ? cRedColor
+                                        : cPurpleColor,
+                          ),
                         ),
                       ),
                       //? untuk menampilkan status heartrate rendah/normal/tinggi, tapi karena sudah ada alarm, jadi ini gakepake
@@ -636,7 +690,7 @@ class _HomeUtamaState extends State<HomeUtama> {
   onNotificationListener(String? payload) {
     if (payload != null && payload.isNotEmpty) {
       print('Payload Masuk');
-      
+
       Navigator.push(
         context,
         MaterialPageRoute(

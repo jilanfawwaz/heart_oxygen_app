@@ -10,6 +10,7 @@ const Color cBlackColor = Color(0xff545151);
 const Color cBlackTextFieldColor = Color(0xff3F3D56);
 const Color cPurpleDarkColor = Color(0xff5C40CC);
 const Color cRedColor = Color(0xffD7443E);
+const Color cBlueColor = Color.fromARGB(255, 78, 147, 249);
 
 FontWeight light = FontWeight.w300;
 FontWeight regular = FontWeight.w400;

@@ -8,6 +8,8 @@ class HalamanProfile extends StatelessWidget {
   const HalamanProfile({super.key});
 
   static const nameRoute = '/halamanprofile';
+  // ignore: prefer_final_fields
+  
 
   @override
   Widget build(BuildContext context) {

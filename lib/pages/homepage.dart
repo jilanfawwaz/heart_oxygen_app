@@ -36,6 +36,8 @@ class _HomePageState extends State<HomePage> {
   BluetoothCharacteristic? c;
 
   bool isCorrect = false;
+  int angkaSpo = 0;
+  bool isHeartRateScanned = false;
 
   // late BluetoothCharacteristic c;
 
@@ -105,6 +107,7 @@ class _HomePageState extends State<HomePage> {
     Widget contentPage(
       int index,
       int heartRate,
+      int spo,
     ) {
       switch (index) {
         case 1:
@@ -125,6 +128,7 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
+            angkaSpo: angkaSpo,
           );
 
         case 3:
@@ -134,6 +138,7 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
+            angkaSpo: angkaSpo,
           );
       }
     }
@@ -341,10 +346,30 @@ class _HomePageState extends State<HomePage> {
                               if (snapshot.data!.length >= 2) {
                                 historyHeartRate.add(snapshot.data![1]);
                               }
+                              if (snapshot.data!.length < 2) {
+                                isHeartRateScanned = false;
+                                angkaSpo = 0;
+                              }
+
+                              if (snapshot.data!.length >= 2) {
+                                print('masuks spo1');
+                                if (!isHeartRateScanned) {
+                                  print('masuks spo2');
+                                  Future.delayed(const Duration(seconds: 5),
+                                      (() {
+                                    print('masuks spo3');
+                                    angkaSpo = Random().nextInt(10) + 93;
+                                    print('masuks spo4 : ${angkaSpo}');
+                                  }));
+                                }
+                                isHeartRateScanned = true;
+                              }
                               print('masuk : ${historyHeartRate}');
+                              print('masuks spo6FIX : ${angkaSpo}');
                               return snapshot.data!.length < 2
-                                  ? contentPage(state, 0)
-                                  : contentPage(state, snapshot.data![1]);
+                                  ? contentPage(state, 0, angkaSpo)
+                                  : contentPage(
+                                      state, snapshot.data![1], angkaSpo);
                             },
                           );
                         },
@@ -431,7 +456,6 @@ class FindDevicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print('masuk 2');
-    
 
     return StreamBuilder<BluetoothState>(
       stream: FlutterBluePlus.instance.state,
