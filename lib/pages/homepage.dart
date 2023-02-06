@@ -355,7 +355,7 @@ class _HomePageState extends State<HomePage> {
                                 print('masuks spo1');
                                 if (!isHeartRateScanned) {
                                   print('masuks spo2');
-                                  Future.delayed(const Duration(seconds: 5),
+                                  Future.delayed(const Duration(seconds: 15),
                                       (() {
                                     print('masuks spo3');
                                     angkaSpo = Random().nextInt(10) + 93;

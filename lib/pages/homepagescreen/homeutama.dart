@@ -43,7 +43,7 @@ class _HomeUtamaState extends State<HomeUtama> {
   bool isRendah = false;
   bool isTinggi = false;
   bool isSpo = false;
-  int angkaSpoUtama = 0;
+  // int angkaSpoUtama = 0;
   AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
   TextEditingController spoController =
       TextEditingController(); //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
@@ -501,12 +501,13 @@ class _HomeUtamaState extends State<HomeUtama> {
                               Text(
                                 widget.angkaSpo == 0
                                     ? 'Scan SPO!'
-                                    : spoController.text == '' ? '${widget.angkaSpo} %' : '${spoController.text} %',
+                                    : spoController.text == ''
+                                        ? '${widget.angkaSpo} %'
+                                        : '${spoController.text} %',
                                 style: cHeader1Style.copyWith(
                                   color: cBlackColor,
                                 ),
                               ),
-                             
                             ],
                           ),
                           const SizedBox(
@@ -533,6 +534,30 @@ class _HomeUtamaState extends State<HomeUtama> {
                                           if (int.parse(spoController.text) >
                                               100) {
                                             spoController.text = '100';
+                                          }
+                                        }
+                                        if (int.parse(spoController.text) >
+                                            10) {
+                                          if (umur <= 4) {
+                                            if (int.parse(spoController.text) <
+                                                93) {
+                                              service.showNotification(
+                                                id: 0,
+                                                title: 'SPO kamu rendah nih !!',
+                                                body:
+                                                    'Ayo perbanyak menghirup oksigen !!!',
+                                              );
+                                            }
+                                          } else {
+                                            if (int.parse(spoController.text) <
+                                                95) {
+                                              service.showNotification(
+                                                id: 0,
+                                                title: 'SPO kamu rendah nih !!',
+                                                body:
+                                                    'Ayo perbanyak menghirup oksigen !!!',
+                                              );
+                                            }
                                           }
                                         }
                                       });
@@ -609,7 +634,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                         height: 10,
                       ),
                       Visibility(
-                        visible: widget.angkaSpo !=  0,
+                        visible: widget.angkaSpo != 0,
                         child: Text(
                           spoController.text == ''
                               ? 'Masukkan Nilai SPO'
