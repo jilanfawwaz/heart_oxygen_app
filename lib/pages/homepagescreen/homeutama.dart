@@ -7,6 +7,7 @@ import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanmakanandanolahrag
 import 'package:intl/intl.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
+import '../../model/spomodel.dart';
 import '../../services/audiocontroller.dart';
 import '../../services/localnotificationservice.dart';
 import '../../shared/theme.dart';
@@ -17,7 +18,6 @@ class HomeUtama extends StatefulWidget {
     required this.nama,
     required this.id,
     required this.listStream,
-    required this.angkaSpo,
     super.key,
   });
   final String nama;
@@ -25,7 +25,6 @@ class HomeUtama extends StatefulWidget {
   // final List<BluetoothService> services;
   // final Stream<List<int>>? listStream;
   final int listStream;
-  final int angkaSpo;
 
   @override
   State<HomeUtama> createState() => _HomeUtamaState();
@@ -43,7 +42,8 @@ class _HomeUtamaState extends State<HomeUtama> {
   bool isRendah = false;
   bool isTinggi = false;
   bool isSpo = false;
-  // int angkaSpoUtama = 0;
+
+  int angkaSpoUtama = 0;
   AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
   TextEditingController spoController =
       TextEditingController(); //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
@@ -105,19 +105,44 @@ class _HomeUtamaState extends State<HomeUtama> {
 
   @override
   Widget build(BuildContext context) {
-    print('masuks spo5utama : ${widget.angkaSpo}');
-    /*if (widget.listStream != 0) {
-      Future.delayed(Duration(seconds: 8), () {
-        // <-- Delay here
-        setState(() {
-          isSpo = true;
-          angkaSpo = (Random().nextInt(10) + 90);
-        });
-      });
-    } else {
-      isSpo = false;
-      angkaSpo = (Random().nextInt(10) + 90);
-    }*/
+    print('masuks spo5utama : ${angkaSpoUtama}');
+
+    if (widget.listStream != 0) {
+      Future.delayed(
+        const Duration(seconds: 15),
+        (() {
+          if (!isSpo) {
+            setState(() {
+              angkaSpoUtama = Random().nextInt(7) + 93;
+              SpoModel.spoValue.add(angkaSpoUtama);
+
+              if (umur <= 4) {
+                if (angkaSpoUtama< 93) {
+                  service.showNotification(
+                    id: 0,
+                    title: 'SPO kamu rendah nih !!',
+                    body: 'Ayo perbanyak menghirup oksigen !!!',
+                  );
+                }
+                SpoModel.spoValue.add(angkaSpoUtama);
+              } else {
+                if (angkaSpoUtama < 95) {
+                  service.showNotification(
+                    id: 0,
+                    title: 'SPO kamu rendah nih !!',
+                    body: 'Ayo perbanyak menghirup oksigen !!!',
+                  );
+                }
+                SpoModel.spoValue.add(angkaSpoUtama);
+              }
+
+              isSpo = true;
+            });
+          }
+        }),
+      );
+    }
+
     if (umur != -1) {
       //? umur dibawah 2 tahun, HR 80-160
       if (umur < 2) {
@@ -499,10 +524,10 @@ class _HomeUtamaState extends State<HomeUtama> {
                                 width: 16,
                               ),
                               Text(
-                                widget.angkaSpo == 0
+                                angkaSpoUtama == 0
                                     ? 'Scan SPO!'
                                     : spoController.text == ''
-                                        ? '${widget.angkaSpo} %'
+                                        ? '${angkaSpoUtama} %'
                                         : '${spoController.text} %',
                                 style: cHeader1Style.copyWith(
                                   color: cBlackColor,
@@ -516,7 +541,7 @@ class _HomeUtamaState extends State<HomeUtama> {
 
                           //? TextField untuk input SPO
                           Visibility(
-                            visible: widget.angkaSpo != 0,
+                            visible: angkaSpoUtama != 0,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -548,6 +573,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                                                     'Ayo perbanyak menghirup oksigen !!!',
                                               );
                                             }
+                                          
                                           } else {
                                             if (int.parse(spoController.text) <
                                                 95) {
@@ -558,7 +584,10 @@ class _HomeUtamaState extends State<HomeUtama> {
                                                     'Ayo perbanyak menghirup oksigen !!!',
                                               );
                                             }
+                                            
                                           }
+                                          SpoModel.spoValue.add(
+                                                int.parse(spoController.text));
                                         }
                                       });
                                     },
@@ -634,7 +663,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                         height: 10,
                       ),
                       Visibility(
-                        visible: widget.angkaSpo != 0,
+                        visible: angkaSpoUtama != 0,
                         child: Text(
                           spoController.text == ''
                               ? 'Masukkan Nilai SPO'
