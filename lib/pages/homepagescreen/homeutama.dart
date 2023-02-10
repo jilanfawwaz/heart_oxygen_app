@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heart_oxygen_alarm/cubit/auth/auth_cubit.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanmakanandanolahraga.dart';
+import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanspo.dart';
 import 'package:intl/intl.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
@@ -42,11 +43,13 @@ class _HomeUtamaState extends State<HomeUtama> {
   bool isRendah = false;
   bool isTinggi = false;
   bool isSpo = false;
+  String notifPayload = 'HR';
 
   int angkaSpoUtama = 0;
   AudioController soundAlarm = AudioController(namaSound: 'suaraalarm');
-  TextEditingController spoController =
-      TextEditingController(); //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
+  /*TextEditingController spoController =
+      TextEditingController(); */ //! Local Notification 11.1 : instansiasi object LocalNotificaitionService
+  TextEditingController spoControllerNew = TextEditingController();
   late final LocalNotificationService service;
   /*Stream dummyData = Stream.periodic(
     const Duration(seconds: 1),
@@ -114,24 +117,38 @@ class _HomeUtamaState extends State<HomeUtama> {
           if (!isSpo) {
             setState(() {
               angkaSpoUtama = Random().nextInt(7) + 93;
+              spoControllerNew =
+                  TextEditingController(text: angkaSpoUtama.toString());
               SpoModel.spoValue.add(angkaSpoUtama);
 
               if (umur <= 4) {
-                if (angkaSpoUtama< 93) {
-                  service.showNotification(
+                if (angkaSpoUtama < 93) {
+                  /*service.showNotification(
                     id: 0,
                     title: 'SPO kamu rendah nih !!',
                     body: 'Ayo perbanyak menghirup oksigen !!!',
-                  );
+                  );*/
+                  notifPayload = 'SPO';
+                  service.showNotificationPayload(
+                      id: 1,
+                      title: 'SPO kamu rendah nih !!',
+                      body: 'Ayo perbanyak menghirup oksigen !!!',
+                      payload: '-');
                 }
                 SpoModel.spoValue.add(angkaSpoUtama);
               } else {
                 if (angkaSpoUtama < 95) {
-                  service.showNotification(
+                  /*service.showNotification(
                     id: 0,
                     title: 'SPO kamu rendah nih !!',
                     body: 'Ayo perbanyak menghirup oksigen !!!',
-                  );
+                  );*/
+                  notifPayload = 'SPO';
+                  service.showNotificationPayload(
+                      id: 1,
+                      title: 'SPO kamu rendah nih !!',
+                      body: 'Ayo perbanyak menghirup oksigen !!!',
+                      payload: '-');
                 }
                 SpoModel.spoValue.add(angkaSpoUtama);
               }
@@ -180,6 +197,7 @@ class _HomeUtamaState extends State<HomeUtama> {
         } else {
           setState(() {
             if (isRendah || isTinggi) {
+              notifPayload = 'HR';
               service.showNotificationPayload(
                   id: 0,
                   title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
@@ -234,6 +252,7 @@ class _HomeUtamaState extends State<HomeUtama> {
           //? heart rate normal
         } else {
           if (isRendah || isTinggi) {
+            notifPayload = 'HR';
             service.showNotificationPayload(
                 id: 0,
                 title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
@@ -289,6 +308,7 @@ class _HomeUtamaState extends State<HomeUtama> {
           //? heart rate normal
         } else {
           if (isRendah || isTinggi) {
+            notifPayload = 'HR';
             service.showNotificationPayload(
                 id: 0,
                 title: 'Yeayy! Heart Rate kamu sudah balik ke normal nih !!',
@@ -523,24 +543,107 @@ class _HomeUtamaState extends State<HomeUtama> {
                               const SizedBox(
                                 width: 16,
                               ),
-                              Text(
-                                angkaSpoUtama == 0
-                                    ? 'Scan SPO!'
-                                    : spoController.text == ''
-                                        ? '${angkaSpoUtama} %'
-                                        : '${spoController.text} %',
-                                style: cHeader1Style.copyWith(
-                                  color: cBlackColor,
-                                ),
-                              ),
+                              angkaSpoUtama == 0
+                                  ? Text(
+                                      'Scan SPO!',
+                                      style: cHeader1Style.copyWith(
+                                        color: cBlackColor,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      width: 150,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.center,
+                                        controller: spoControllerNew,
+                                        keyboardType: TextInputType.number,
+                                        style: cHeader1Style.copyWith(
+                                          color: cBlackColor,
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            if (spoControllerNew.text != '') {
+                                              if (int.parse(
+                                                      spoControllerNew.text) >
+                                                  100) {
+                                                spoControllerNew.text = '100';
+                                              }
+                                              if (int.parse(
+                                                    spoControllerNew.text) >
+                                                10) {
+                                                if (umur <= 4) {
+                                                if (int.parse(
+                                                        spoControllerNew.text) <
+                                                    93) {
+                                                  /*service.showNotification(
+                                                id: 0,
+                                                title: 'SPO kamu rendah nih !!',
+                                                body:
+                                                    'Ayo perbanyak menghirup oksigen !!!',
+                                              );*/
+                                                  notifPayload = 'SPO';
+                                                  service.showNotificationPayload(
+                                                      id: 1,
+                                                      title:
+                                                          'SPO kamu rendah nih !!',
+                                                      body:
+                                                          'Ayo perbanyak menghirup oksigen !!!',
+                                                      payload: '-');
+                                                }
+                                              } else {
+                                                if (int.parse(
+                                                        spoControllerNew.text) <
+                                                    95) {
+                                                  /*service.showNotification(
+                                                id: 0,
+                                                title: 'SPO kamu rendah nih !!',
+                                                body:
+                                                    'Ayo perbanyak menghirup oksigen !!!',
+                                              );*/
+                                                  notifPayload = 'SPO';
+                                                  service.showNotificationPayload(
+                                                      id: 1,
+                                                      title:
+                                                          'SPO kamu rendah nih !!',
+                                                      body:
+                                                          'Ayo perbanyak menghirup oksigen !!!',
+                                                      payload: '-');
+                                                }
+                                              }
+                                              SpoModel.spoValue.add(int.parse(
+                                                  spoControllerNew.text));
+                                            }
+                                            }
+                                            
+                                          });
+                                        },
+                                      ),
+                                    ),
+                              spoControllerNew.text == ''
+                                  ? const SizedBox()
+                                  : const SizedBox(
+                                      width: 20,
+                                    ),
+                              spoControllerNew.text == ''
+                                  ? const SizedBox()
+                                  : Text(
+                                      '%',
+                                      style: cHeader1Style.copyWith(
+                                        color: widget.listStream == 0
+                                            ? Colors.grey.shade300
+                                            : cBlackColor,
+                                      ),
+                                    ),
                             ],
                           ),
+                          /* spoController.text == ''
+                                        ? '${angkaSpoUtama} %'
+                                        : '${spoController.text} %' */
                           const SizedBox(
                             height: 15,
                           ),
 
                           //? TextField untuk input SPO
-                          Visibility(
+                          /* Visibility(
                             visible: angkaSpoUtama != 0,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -566,28 +669,42 @@ class _HomeUtamaState extends State<HomeUtama> {
                                           if (umur <= 4) {
                                             if (int.parse(spoController.text) <
                                                 93) {
-                                              service.showNotification(
+                                              /*service.showNotification(
                                                 id: 0,
                                                 title: 'SPO kamu rendah nih !!',
                                                 body:
                                                     'Ayo perbanyak menghirup oksigen !!!',
-                                              );
+                                              );*/
+                                              notifPayload = 'SPO';
+                                              service.showNotificationPayload(
+                                                  id: 1,
+                                                  title:
+                                                      'SPO kamu rendah nih !!',
+                                                  body:
+                                                      'Ayo perbanyak menghirup oksigen !!!',
+                                                  payload: '-');
                                             }
-                                          
                                           } else {
                                             if (int.parse(spoController.text) <
                                                 95) {
-                                              service.showNotification(
+                                              /*service.showNotification(
                                                 id: 0,
                                                 title: 'SPO kamu rendah nih !!',
                                                 body:
                                                     'Ayo perbanyak menghirup oksigen !!!',
-                                              );
+                                              );*/
+                                              notifPayload = 'SPO';
+                                              service.showNotificationPayload(
+                                                  id: 1,
+                                                  title:
+                                                      'SPO kamu rendah nih !!',
+                                                  body:
+                                                      'Ayo perbanyak menghirup oksigen !!!',
+                                                  payload: '-');
                                             }
-                                            
                                           }
                                           SpoModel.spoValue.add(
-                                                int.parse(spoController.text));
+                                              int.parse(spoController.text));
                                         }
                                       });
                                     },
@@ -635,7 +752,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                                 ),
                               ],
                             ),
-                          ),
+                          ),*/
                           /*Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -662,7 +779,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Visibility(
+                      /*Visibility(
                         visible: angkaSpoUtama != 0,
                         child: Text(
                           spoController.text == ''
@@ -701,7 +818,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                                         : cPurpleColor,
                           ),
                         ),
-                      ),
+                      ),*/
                       //? untuk menampilkan status heartrate rendah/normal/tinggi, tapi karena sudah ada alarm, jadi ini gakepake
                       /*Text(
                         widget.listStream < 60
@@ -745,12 +862,21 @@ class _HomeUtamaState extends State<HomeUtama> {
     if (payload != null && payload.isNotEmpty) {
       print('Payload Masuk');
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HalamanMakananDanOlahraga(),
-        ),
-      );
+      if (notifPayload == 'HR') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HalamanMakananDanOlahraga(),
+          ),
+        );
+      } else if (notifPayload == 'SPO') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HalamanSPO(),
+          ),
+        );
+      }
     }
   }
 }

@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           // HomePage.nameRoute: (context) => HomePage(),
           FindDevicesScreen.nameRoute: (context) => const FindDevicesScreen(),
           HomeDiagram.nameRoute:(context) => const HomeDiagram(),
-          HalamanProfile.nameRoute:(context) => const HalamanProfile(),
+          HalamanProfile.nameRoute:(context) =>  HalamanProfile(),
           HalamanMakananDanOlahraga.nameRoute:(context) => HalamanMakananDanOlahraga(),
           
         },
