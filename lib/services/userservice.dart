@@ -14,6 +14,8 @@ class UserService {
         'username': user.username,
         'email': user.email,
         'date': user.date,
+        'stat': user.stat,
+        'statspo': user.statSpo,
       });
     } catch (e) {
       rethrow;

@@ -40,6 +40,8 @@ class AuthService {
 
       //! NOTE: Langkah 11:
       UserService().setUser(userData);
+      UserModel user =
+          await UserService().getUserById(userCreate.user!.uid); //mengambil dat
 
       return userData;
     } catch (e) {
