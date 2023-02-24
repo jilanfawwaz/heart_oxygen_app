@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:heart_oxygen_alarm/model/diagrammodelheartrate.dart';
 import '../../model/usermodel.dart';
 import '../../services/authservice.dart';
 import '../../services/userservice.dart';
@@ -48,6 +49,9 @@ class AuthCubit extends Cubit<AuthState> {
     //dipanggil di halaman splashPage, kalau app direstart, mengambil data dari firebase berdasarkan id yang aktif
     try {
       UserModel user = await UserService().getUserById(id);
+      // print('masuka : ${user.stat}');
+      HeartRateModel.heartRateValue = user.stat as List<int>;
+      // print('masuka2 : ${HeartRateModel.heartRateValue}');
       emit(AuthSuccess(user));
     } catch (e) {
       emit(AuthFailed(e.toString()));
@@ -61,9 +65,10 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthLoading());
       UserModel user = await AuthService().signIn(
-          email: email,
-          password:
-              password); //mengambil data user dari proses di authService, kemudian data ini diinisialisasi ke userModel untuk dimasukkan ke authSuccess
+        email: email,
+        password: password,
+      ); //mengambil data user dari proses di authService, kemudian data ini diinisialisasi ke userModel untuk dimasukkan ke authSuccess
+
       emit(AuthSuccess(user)); //data signIn dimasukkan ke state success
     } catch (e) {
       emit(AuthFailed(e.toString()));
@@ -76,6 +81,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String username,
     required String email,
     required String date,
+    required List<dynamic> stat,
   }) async {
     try {
       emit(AuthLoading()); //state diubah menjadi loading
@@ -86,9 +92,42 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         username: username,
         date: date,
+        stat: stat,
       );
 
-      await UserService().setUser(
+      await UserService().updateUser(
+          //ketika state masih loading,disini akan dilakukan inisialisasi VariabelObject UserModel(untuk dimasukkan ke AuthSuccess) sekaligus pembuatan akun di AuthService signUp dan memasukkan data ke firebase
+          user);
+
+      emit(AuthSuccess(
+          user)); //nilai UserModel dimasukkan ke sini, nanti di Page akan ada pengkondisian yang memanggil data berdasarkan data yang disimpan state success
+    } catch (e) {
+      emit(AuthFailed(e
+          .toString())); //memasukkan pesan error, ketika state error, maka pesan string error yang ditampilkan di state ini akan ditampilkan
+    }
+  }
+
+  void updateStat({
+    required String id,
+    required String name,
+    required String username,
+    required String email,
+    required String date,
+    required List<dynamic> stat,
+  }) async {
+    try {
+      emit(AuthLoading()); //state diubah menjadi loading
+
+      UserModel user = UserModel(
+        id: id,
+        name: name,
+        email: email,
+        username: username,
+        date: date,
+        stat: stat,
+      );
+
+      await UserService().updateUserStat(
           //ketika state masih loading,disini akan dilakukan inisialisasi VariabelObject UserModel(untuk dimasukkan ke AuthSuccess) sekaligus pembuatan akun di AuthService signUp dan memasukkan data ke firebase
           user);
 

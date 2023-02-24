@@ -12,9 +12,9 @@ class LoginPage extends StatelessWidget {
   static const nameRoute = '/loginpage';
   LoginPage({super.key});
   final TextEditingController emailController =
-      TextEditingController();
+      TextEditingController(text: 'usertestt@gmail.com');
   final TextEditingController passwordController =
-      TextEditingController();
+      TextEditingController(text: 'usertestt');
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +91,8 @@ class LoginPage extends StatelessWidget {
                 BlocConsumer<AuthCubit, AuthState>(
                   listener: (context, state) {
                     if (state is AuthSuccess) {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, FindDevicesScreen.nameRoute, (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          FindDevicesScreen.nameRoute, (route) => false);
                     } else if (state is AuthFailed) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         duration: const Duration(

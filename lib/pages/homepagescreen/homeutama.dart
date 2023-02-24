@@ -8,6 +8,7 @@ import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanspo.dart';
 import 'package:intl/intl.dart';
 // import 'package:flutter_blue_plus/gen/flutterblueplus.pbserver.dart';
 
+import '../../model/diagrammodelheartrate.dart';
 import '../../model/spomodel.dart';
 import '../../services/audiocontroller.dart';
 import '../../services/localnotificationservice.dart';
@@ -340,6 +341,7 @@ class _HomeUtamaState extends State<HomeUtama> {
                   360)
               .floor();
 
+
           return isRendah || isTinggi
               ? Container(
                   width: double.infinity,
@@ -568,52 +570,51 @@ class _HomeUtamaState extends State<HomeUtama> {
                                                 spoControllerNew.text = '100';
                                               }
                                               if (int.parse(
-                                                    spoControllerNew.text) >
-                                                10) {
+                                                      spoControllerNew.text) >
+                                                  10) {
                                                 if (umur <= 4) {
-                                                if (int.parse(
-                                                        spoControllerNew.text) <
-                                                    93) {
-                                                  /*service.showNotification(
+                                                  if (int.parse(spoControllerNew
+                                                          .text) <
+                                                      93) {
+                                                    /*service.showNotification(
                                                 id: 0,
                                                 title: 'SPO kamu rendah nih !!',
                                                 body:
                                                     'Ayo perbanyak menghirup oksigen !!!',
                                               );*/
-                                                  notifPayload = 'SPO';
-                                                  service.showNotificationPayload(
-                                                      id: 1,
-                                                      title:
-                                                          'SPO kamu rendah nih !!',
-                                                      body:
-                                                          'Ayo perbanyak menghirup oksigen !!!',
-                                                      payload: '-');
-                                                }
-                                              } else {
-                                                if (int.parse(
-                                                        spoControllerNew.text) <
-                                                    95) {
-                                                  /*service.showNotification(
+                                                    notifPayload = 'SPO';
+                                                    service.showNotificationPayload(
+                                                        id: 1,
+                                                        title:
+                                                            'SPO kamu rendah nih !!',
+                                                        body:
+                                                            'Ayo perbanyak menghirup oksigen !!!',
+                                                        payload: '-');
+                                                  }
+                                                } else {
+                                                  if (int.parse(spoControllerNew
+                                                          .text) <
+                                                      95) {
+                                                    /*service.showNotification(
                                                 id: 0,
                                                 title: 'SPO kamu rendah nih !!',
                                                 body:
                                                     'Ayo perbanyak menghirup oksigen !!!',
                                               );*/
-                                                  notifPayload = 'SPO';
-                                                  service.showNotificationPayload(
-                                                      id: 1,
-                                                      title:
-                                                          'SPO kamu rendah nih !!',
-                                                      body:
-                                                          'Ayo perbanyak menghirup oksigen !!!',
-                                                      payload: '-');
+                                                    notifPayload = 'SPO';
+                                                    service.showNotificationPayload(
+                                                        id: 1,
+                                                        title:
+                                                            'SPO kamu rendah nih !!',
+                                                        body:
+                                                            'Ayo perbanyak menghirup oksigen !!!',
+                                                        payload: '-');
+                                                  }
                                                 }
+                                                SpoModel.spoValue.add(int.parse(
+                                                    spoControllerNew.text));
                                               }
-                                              SpoModel.spoValue.add(int.parse(
-                                                  spoControllerNew.text));
                                             }
-                                            }
-                                            
                                           });
                                         },
                                       ),

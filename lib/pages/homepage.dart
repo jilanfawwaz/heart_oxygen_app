@@ -8,6 +8,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:heart_oxygen_alarm/cubit/bottompage/bottompage_cubit.dart';
 import 'package:heart_oxygen_alarm/model/diagrammodelheartrate.dart';
 import 'package:heart_oxygen_alarm/model/spomodel.dart';
+import 'package:heart_oxygen_alarm/model/useridmodel.dart';
 import 'package:heart_oxygen_alarm/pages/bluetoothoffscreen.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanprofil.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/homediagram.dart';
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   bool isCorrect = false;
   int angkaSpo = 0;
   bool isHeartRateScanned = false;
+  List<int> statValue = [];
 
   // late BluetoothCharacteristic c;
 
@@ -109,7 +111,6 @@ class _HomePageState extends State<HomePage> {
     Widget contentPage(
       int index,
       int heartRate,
-      
     ) {
       switch (index) {
         case 1:
@@ -126,11 +127,11 @@ class _HomePageState extends State<HomePage> {
               );
             },
           );*/
+
           return HomeUtama(
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
-            
           );
 
         case 3:
@@ -140,7 +141,6 @@ class _HomePageState extends State<HomePage> {
             nama: widget.bluetoothDevice.name,
             id: widget.bluetoothDevice.id.toString(),
             listStream: heartRate,
-            
           );
       }
     }
@@ -345,17 +345,27 @@ class _HomePageState extends State<HomePage> {
                             stream: c?.value,
                             initialData: const [],
                             builder: (context, snapshot) {
+                              //! HR EDIT
                               if (snapshot.data!.length >= 2) {
                                 // historyHeartRate.add(snapshot.data![1]);
                                 HeartRateModel.heartRateValue
                                     .add(snapshot.data![1]);
+
+                                context.read<AuthCubit>().updateStat(
+                                      id: UserIDModel.id,
+                                      name: UserIDModel.name,
+                                      username: UserIDModel.username,
+                                      email: UserIDModel.email,
+                                      date: UserIDModel.date,
+                                      stat: HeartRateModel.heartRateValue,
+                                    );
                               }
                               if (snapshot.data!.length < 2) {
                                 isHeartRateScanned = false;
                                 angkaSpo = 0;
                               }
 
-                             /* if (snapshot.data!.length >= 2) {
+                              /* if (snapshot.data!.length >= 2) {
                                 print('masuks spo1');
                                 if (!isHeartRateScanned) {
                                   print('masuks spo2');
@@ -373,10 +383,10 @@ class _HomePageState extends State<HomePage> {
                               }*/
                               print('masuk : ${historyHeartRate}');
                               // print('masuks spo6FIX : ${angkaSpo}');
+
                               return snapshot.data!.length < 2
                                   ? contentPage(state, 0)
-                                  : contentPage(
-                                      state, snapshot.data![1]);
+                                  : contentPage(state, snapshot.data![1]);
                             },
                           );
                         },

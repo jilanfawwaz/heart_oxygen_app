@@ -1,3 +1,3 @@
 class HeartRateModel {
-  static final List<int> heartRateValue = [];
+  static  List<int> heartRateValue = [];
 }

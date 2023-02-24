@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:heart_oxygen_alarm/model/diagrammodelheartrate.dart';
+import 'package:heart_oxygen_alarm/model/useridmodel.dart';
 import 'package:heart_oxygen_alarm/services/userservice.dart';
 
 import '../model/usermodel.dart';
@@ -27,10 +29,11 @@ class AuthService {
       //! NOTE: Langkah 10:
       UserModel userData = UserModel(
         id: userCreate.user!.uid,
-        name:  name,
+        name: name,
         username: username,
         email: email,
         date: date,
+        stat: [],
       );
 
       //! NOTE: Langkah 11:
@@ -65,6 +68,12 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
+      HeartRateModel.heartRateValue = [];
+      UserIDModel.id = '';
+      UserIDModel.name = '';
+      UserIDModel.username = '';
+      UserIDModel.date = '';
+      UserIDModel.email = '';
       await _auth.signOut(); // session _auth di firebase berakhir
     } catch (e) {
       rethrow;

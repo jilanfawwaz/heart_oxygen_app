@@ -4,6 +4,7 @@ class UserModel {
   String username;
   String email;
   String date;
+  List<dynamic> stat;
 
   UserModel({
     required this.id,
@@ -11,5 +12,6 @@ class UserModel {
     required this.username,
     required this.email,
     required this.date,
+    required this.stat,
   });
 }

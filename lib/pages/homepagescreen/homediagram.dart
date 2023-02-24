@@ -20,8 +20,7 @@ class _HomeDiagramState extends State<HomeDiagram> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
-    print('masuksss : ${SpoModel.spoValue}');
-    print('masuksss2 : ${HeartRateModel.heartRateValue}');
+  
   }
 
   @override
