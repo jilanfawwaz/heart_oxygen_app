@@ -200,6 +200,7 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                   email: state.user.email,
                                   date: _dateTime.toString(),
                                   stat: state.user.stat,
+                                  statSpo: state.user.statSpo,
                                 );
                             Navigator.pop(context);
                           },

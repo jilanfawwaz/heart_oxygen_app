@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heart_oxygen_alarm/cubit/auth/auth_cubit.dart';
+import 'package:heart_oxygen_alarm/model/useridmodel.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanmakanandanolahraga.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanspo.dart';
 import 'package:intl/intl.dart';
@@ -121,6 +122,15 @@ class _HomeUtamaState extends State<HomeUtama> {
               spoControllerNew =
                   TextEditingController(text: angkaSpoUtama.toString());
               SpoModel.spoValue.add(angkaSpoUtama);
+              context.read<AuthCubit>().updateStatSpo(
+                    id: UserIDModel.id,
+                    name: UserIDModel.name,
+                    username: UserIDModel.name,
+                    email: UserIDModel.email,
+                    date: UserIDModel.date,
+                    stat: HeartRateModel.heartRateValue,
+                    statSpo: SpoModel.spoValue,
+                  );
 
               if (umur <= 4) {
                 if (angkaSpoUtama < 93) {
@@ -137,6 +147,15 @@ class _HomeUtamaState extends State<HomeUtama> {
                       payload: '-');
                 }
                 SpoModel.spoValue.add(angkaSpoUtama);
+                context.read<AuthCubit>().updateStatSpo(
+                    id: UserIDModel.id,
+                    name: UserIDModel.name,
+                    username: UserIDModel.name,
+                    email: UserIDModel.email,
+                    date: UserIDModel.date,
+                    stat: HeartRateModel.heartRateValue,
+                    statSpo: SpoModel.spoValue,
+                  );
               } else {
                 if (angkaSpoUtama < 95) {
                   /*service.showNotification(
@@ -152,6 +171,15 @@ class _HomeUtamaState extends State<HomeUtama> {
                       payload: '-');
                 }
                 SpoModel.spoValue.add(angkaSpoUtama);
+                context.read<AuthCubit>().updateStatSpo(
+                    id: UserIDModel.id,
+                    name: UserIDModel.name,
+                    username: UserIDModel.name,
+                    email: UserIDModel.email,
+                    date: UserIDModel.date,
+                    stat: HeartRateModel.heartRateValue,
+                    statSpo: SpoModel.spoValue,
+                  );
               }
 
               isSpo = true;
@@ -340,7 +368,6 @@ class _HomeUtamaState extends State<HomeUtama> {
                       .inDays) /
                   360)
               .floor();
-
 
           return isRendah || isTinggi
               ? Container(
@@ -613,6 +640,15 @@ class _HomeUtamaState extends State<HomeUtama> {
                                                 }
                                                 SpoModel.spoValue.add(int.parse(
                                                     spoControllerNew.text));
+                                                    context.read<AuthCubit>().updateStatSpo(
+                    id: UserIDModel.id,
+                    name: UserIDModel.name,
+                    username: UserIDModel.name,
+                    email: UserIDModel.email,
+                    date: UserIDModel.date,
+                    stat: HeartRateModel.heartRateValue,
+                    statSpo: SpoModel.spoValue,
+                  );
                                               }
                                             }
                                           });

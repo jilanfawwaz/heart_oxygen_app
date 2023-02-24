@@ -82,6 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String date,
     required List<dynamic> stat,
+    required List<dynamic> statSpo,
   }) async {
     try {
       emit(AuthLoading()); //state diubah menjadi loading
@@ -93,6 +94,7 @@ class AuthCubit extends Cubit<AuthState> {
         username: username,
         date: date,
         stat: stat,
+        statSpo: statSpo,
       );
 
       await UserService().updateUser(
@@ -114,6 +116,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String date,
     required List<dynamic> stat,
+    required List<dynamic> statSpo,
   }) async {
     try {
       emit(AuthLoading()); //state diubah menjadi loading
@@ -125,9 +128,43 @@ class AuthCubit extends Cubit<AuthState> {
         username: username,
         date: date,
         stat: stat,
+        statSpo: statSpo,
       );
 
       await UserService().updateUserStat(
+          //ketika state masih loading,disini akan dilakukan inisialisasi VariabelObject UserModel(untuk dimasukkan ke AuthSuccess) sekaligus pembuatan akun di AuthService signUp dan memasukkan data ke firebase
+          user);
+
+      emit(AuthSuccess(
+          user)); //nilai UserModel dimasukkan ke sini, nanti di Page akan ada pengkondisian yang memanggil data berdasarkan data yang disimpan state success
+    } catch (e) {
+      emit(AuthFailed(e
+          .toString())); //memasukkan pesan error, ketika state error, maka pesan string error yang ditampilkan di state ini akan ditampilkan
+    }
+  }
+  void updateStatSpo({
+    required String id,
+    required String name,
+    required String username,
+    required String email,
+    required String date,
+    required List<dynamic> stat,
+    required List<dynamic> statSpo,
+  }) async {
+    try {
+      emit(AuthLoading()); //state diubah menjadi loading
+
+      UserModel user = UserModel(
+        id: id,
+        name: name,
+        email: email,
+        username: username,
+        date: date,
+        stat: stat,
+        statSpo: statSpo,
+      );
+
+      await UserService().updateUserStatSPO(
           //ketika state masih loading,disini akan dilakukan inisialisasi VariabelObject UserModel(untuk dimasukkan ke AuthSuccess) sekaligus pembuatan akun di AuthService signUp dan memasukkan data ke firebase
           user);
 

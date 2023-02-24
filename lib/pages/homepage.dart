@@ -358,6 +358,7 @@ class _HomePageState extends State<HomePage> {
                                       email: UserIDModel.email,
                                       date: UserIDModel.date,
                                       stat: HeartRateModel.heartRateValue,
+                                      statSpo: SpoModel.spoValue,
                                     );
                               }
                               if (snapshot.data!.length < 2) {

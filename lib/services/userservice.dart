@@ -42,6 +42,16 @@ class UserService {
     }
   }
 
+  Future updateUserStatSPO(UserModel user) async {
+    try {
+      _userReference.doc(user.id).update({
+        'statspo': user.statSpo,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<UserModel> getUserById(String id) async {
     DocumentSnapshot snapshot = await _userReference
         .doc(id)
@@ -56,6 +66,7 @@ class UserService {
         name: snapshot['name'],
         date: snapshot['date'],
         stat: snapshot['stat'] as List<dynamic>,
+        statSpo: snapshot['statspo'] as List<dynamic>,
       );
 
       HeartRateModel.heartRateValue = user.stat.cast();

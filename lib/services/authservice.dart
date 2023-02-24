@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:heart_oxygen_alarm/model/diagrammodelheartrate.dart';
+import 'package:heart_oxygen_alarm/model/spomodel.dart';
 import 'package:heart_oxygen_alarm/model/useridmodel.dart';
 import 'package:heart_oxygen_alarm/services/userservice.dart';
 
@@ -34,6 +35,7 @@ class AuthService {
         email: email,
         date: date,
         stat: [],
+        statSpo: [],
       );
 
       //! NOTE: Langkah 11:
@@ -68,6 +70,7 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
+      SpoModel.spoValue = [];
       HeartRateModel.heartRateValue = [];
       UserIDModel.id = '';
       UserIDModel.name = '';

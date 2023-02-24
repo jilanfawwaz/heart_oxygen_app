@@ -5,6 +5,7 @@ class UserModel {
   String email;
   String date;
   List<dynamic> stat;
+  List<dynamic> statSpo;
 
   UserModel({
     required this.id,
@@ -13,5 +14,6 @@ class UserModel {
     required this.email,
     required this.date,
     required this.stat,
+    required this.statSpo,
   });
 }
