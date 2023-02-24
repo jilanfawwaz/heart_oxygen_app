@@ -1,20 +1,57 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class NewsModel {
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+
+class NewsModel extends Equatable {
+  final String id;
   final String title;
   final String deskripsi;
   final String url;
   final String image;
 
   NewsModel({
+    required this.id,
     required this.title,
     required this.deskripsi,
     required this.url,
     required this.image,
   });
+
+  factory NewsModel.fromJson(String id, Map<String, dynamic> json) {
+    return NewsModel(
+      id:id,
+      title: json['title'],
+      deskripsi: json['deskripsi'],
+      url: json['url'],
+      image: json['image'],
+    );
+  }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id, title, deskripsi, url, image];
 }
 
 class NewsData {
-  static List<NewsModel> listDataBerita = [
+  final CollectionReference _userReference =
+      FirebaseFirestore.instance.collection('solusinews');
+
+      Future<List<NewsModel>> fetchDestination() async {
+    try {
+      QuerySnapshot snapshot = await _userReference.get();
+
+      List<NewsModel> destination = snapshot.docs.map((e) {
+        return NewsModel.fromJson(
+            e.id, e.data() as Map<String, dynamic>);
+      }).toList();
+
+      return destination;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /*static List<NewsModel> listDataBerita = [
     NewsModel(
       title:
           'Cara Menurunkan Detak Jantung saat Kondisi Istirahat, Ketahui Manfaatnya',
@@ -79,5 +116,5 @@ class NewsData {
       image:
           'https://mysiloam-api.siloamhospitals.com/public-asset/website-cms/website-cms-16658544722562888.webp',
     ),
-  ];
+  ];*/
 }

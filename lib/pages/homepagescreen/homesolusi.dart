@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heart_oxygen_alarm/cubit/cubit/news_cubit.dart';
 import 'package:heart_oxygen_alarm/shared/theme.dart';
 
 import '../../model/newsmodel.dart';
 import '../../widget/newscardwidget.dart';
 
-class HomeSolusi extends StatelessWidget {
+class HomeSolusi extends StatefulWidget {
   HomeSolusi({Key? key}) : super(key: key);
 
-  List<NewsModel> dataBerita = NewsData.listDataBerita;
+  @override
+  State<HomeSolusi> createState() => _HomeSolusiState();
+}
 
+class _HomeSolusiState extends State<HomeSolusi> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<NewsCubit>().fetchNewsModel();
+  }
+
+  // List<NewsModel> dataBerita = NewsData.listDataBerita;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,18 +37,27 @@ class HomeSolusi extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: dataBerita.length,
-              itemBuilder: (BuildContext context, int i) {
-                return NewsCardWidget(
-                  title: dataBerita[i].title,
-                  deskripsi: dataBerita[i].deskripsi,
-                  image: dataBerita[i].image,
-                  url: dataBerita[i].url,
+          BlocBuilder<NewsCubit, NewsState>(
+            builder: (context, dataBerita) {
+              if (dataBerita is NewsSuccess) {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: dataBerita.newsModel.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return NewsCardWidget(
+                        title: dataBerita.newsModel[i].title,
+                        deskripsi: dataBerita.newsModel[i].deskripsi,
+                        image: dataBerita.newsModel[i].image,
+                        url: dataBerita.newsModel[i].url,
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
           const SizedBox(
             height: 100,

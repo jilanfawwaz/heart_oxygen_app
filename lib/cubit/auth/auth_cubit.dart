@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:heart_oxygen_alarm/model/diagrammodelheartrate.dart';
+import 'package:heart_oxygen_alarm/model/spomodel.dart';
 import '../../model/usermodel.dart';
 import '../../services/authservice.dart';
 import '../../services/userservice.dart';
@@ -50,7 +51,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       UserModel user = await UserService().getUserById(id);
       // print('masuka : ${user.stat}');
-      HeartRateModel.heartRateValue = user.stat as List<int>;
+     
       // print('masuka2 : ${HeartRateModel.heartRateValue}');
       emit(AuthSuccess(user));
     } catch (e) {

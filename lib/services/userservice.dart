@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:heart_oxygen_alarm/model/spomodel.dart';
 import 'package:heart_oxygen_alarm/model/useridmodel.dart';
 import '../model/diagrammodelheartrate.dart';
 import '../model/usermodel.dart';
@@ -71,7 +72,11 @@ class UserService {
         statSpo: snapshot['statspo'] as List<dynamic>,
       );
 
+      /*HeartRateModel.heartRateValue = user.stat as List<int>;
+      SpoModel.spoValue = user.statSpo as List<int>;*/
+
       HeartRateModel.heartRateValue = user.stat.cast();
+      SpoModel.spoValue = user.statSpo.cast();
       UserIDModel.id = id;
       UserIDModel.name = user.name;
       UserIDModel.username = user.username;
