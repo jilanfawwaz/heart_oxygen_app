@@ -11,10 +11,8 @@ import '../cubit/auth/auth_cubit.dart';
 class LoginPage extends StatelessWidget {
   static const nameRoute = '/loginpage';
   LoginPage({super.key});
-  final TextEditingController emailController =
-      TextEditingController(text: 'usertestt@gmail.com');
-  final TextEditingController passwordController =
-      TextEditingController(text: 'usertestt');
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

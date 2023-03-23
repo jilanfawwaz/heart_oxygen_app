@@ -47,18 +47,18 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: 200,
+                  height: 200,
                   margin: const EdgeInsets.only(
                     bottom: 50,
                   ),
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/logounikom.png'),
+                      image: AssetImage('assets/images/HealthCare.png'),
                     ),
                   ),
                 ),
-                Padding(
+                /*Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 100,
                   ),
@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     style: cTextButtonWhite.copyWith(color: cWhiteColor),
                     textAlign: TextAlign.center,
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heart_oxygen_alarm/cubit/newsmakananolahraga/newsmakananolahraga_cubit.dart';
 import 'package:heart_oxygen_alarm/model/newsmakananolahraga.dart';
 
 import '../../model/newsmodel.dart';
@@ -9,9 +11,6 @@ class HalamanMakananDanOlahraga extends StatelessWidget {
   HalamanMakananDanOlahraga({super.key});
 
   static const nameRoute = '/halamanmakanandanminuman';
-
-  final List<NewsMakananOlahragaModel> dataBerita =
-      NewsMakananOlahragaData.listDataBerita;
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +27,28 @@ class HalamanMakananDanOlahraga extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: dataBerita.length,
-              itemBuilder: (BuildContext context, int i) {
-                return NewsCardWidget(
-                  title: dataBerita[i].title,
-                  deskripsi: dataBerita[i].deskripsi,
-                  image: dataBerita[i].image,
-                  url: dataBerita[i].url,
+          BlocBuilder<NewsMakananOlahragaCubit, NewsMakananOlahragaState>(
+            builder: (context, dataBerita) {
+              if (dataBerita is NewsMakananOlahragaSuccess) {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: dataBerita.newsMakananOlahragaModel.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return NewsCardWidget(
+                        title: dataBerita.newsMakananOlahragaModel[i].title,
+                        deskripsi:
+                            dataBerita.newsMakananOlahragaModel[i].deskripsi,
+                        image: dataBerita.newsMakananOlahragaModel[i].image,
+                        url: dataBerita.newsMakananOlahragaModel[i].url,
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
           const SizedBox(
             height: 100,

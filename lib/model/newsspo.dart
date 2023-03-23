@@ -1,20 +1,55 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class NewsSPO {
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+
+class NewsSPOModel extends Equatable {
+  final String id;
   final String title;
   final String deskripsi;
   final String url;
   final String image;
 
-  NewsSPO({
+  NewsSPOModel({
+    required this.id,
     required this.title,
     required this.deskripsi,
     required this.url,
     required this.image,
   });
+factory NewsSPOModel.fromJson(
+      String id, Map<String, dynamic> json) {
+    return NewsSPOModel(
+      id: id,
+      title: json['title'],
+      deskripsi: json['deskripsi'],
+      url: json['url'],
+      image: json['image'],
+    );
+  }
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id, title, deskripsi, url, image];
 }
 
 class NewsSPOData {
-  static List<NewsSPO> listDataBerita = [
+  final CollectionReference _userReference =
+      FirebaseFirestore.instance.collection('solusinewsspo');
+
+  Future<List<NewsSPOModel>> fetchDestination() async {
+    try {
+      QuerySnapshot snapshot = await _userReference.get();
+
+      List<NewsSPOModel> destination = snapshot.docs.map((e) {
+        return NewsSPOModel.fromJson(
+            e.id, e.data() as Map<String, dynamic>);
+      }).toList();
+
+      return destination;
+    } catch (e) {
+      rethrow;
+    }
+  }
+  /*static List<NewsSPO> listDataBerita = [
     NewsSPO(
       title: 'Cara Meningkatkan Kadar Saturasi Oksigen',
       deskripsi:
@@ -42,5 +77,5 @@ class NewsSPOData {
           'https://www.youtube.com/watch?v=eWNdKhYqjxc&ab_channel=JurusanKeperawatanPolkesjasa',
       image: 'https://i.ibb.co/QKh5jLF/Screen-Shot-2023-02-10-at-22-57-00.jpg',
     ),
-  ];
+  ];*/
 }

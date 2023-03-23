@@ -4,8 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heart_oxygen_alarm/cubit/auth/auth_cubit.dart';
 import 'package:heart_oxygen_alarm/cubit/bottompage/bottompage_cubit.dart';
-import 'package:heart_oxygen_alarm/cubit/cubit/news_cubit.dart';
+import 'package:heart_oxygen_alarm/cubit/news/news_cubit.dart';
 import 'package:heart_oxygen_alarm/cubit/map/map_cubit.dart';
+import 'package:heart_oxygen_alarm/cubit/newsmakananolahraga/newsmakananolahraga_cubit.dart';
 import 'package:heart_oxygen_alarm/pages/homepage.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanmakanandanolahraga.dart';
 import 'package:heart_oxygen_alarm/pages/homepagescreen/halamanprofil.dart';
@@ -37,8 +38,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => MapCubit(),
         ),
-         BlocProvider(
+        BlocProvider(
           create: (context) => NewsCubit(),
+        ),
+        BlocProvider(
+          create: (context) => NewsMakananOlahragaCubit(),
         ),
       ],
       child: MaterialApp(
@@ -59,10 +63,10 @@ class MyApp extends StatelessWidget {
           RegisterPage.nameRoute: (context) => RegisterPage(),
           // HomePage.nameRoute: (context) => HomePage(),
           FindDevicesScreen.nameRoute: (context) => const FindDevicesScreen(),
-          HomeDiagram.nameRoute:(context) => const HomeDiagram(),
-          HalamanProfile.nameRoute:(context) =>  HalamanProfile(),
-          HalamanMakananDanOlahraga.nameRoute:(context) => HalamanMakananDanOlahraga(),
-          
+          HomeDiagram.nameRoute: (context) => const HomeDiagram(),
+          HalamanProfile.nameRoute: (context) => HalamanProfile(),
+          HalamanMakananDanOlahraga.nameRoute: (context) =>
+              HalamanMakananDanOlahraga(),
         },
       ),
     );

@@ -14,7 +14,7 @@ class HomeMap extends StatefulWidget {
   const HomeMap({super.key});
 
   @override
-  State<HomeMap> createState() => _HomeMapState(); 
+  State<HomeMap> createState() => _HomeMapState();
 }
 
 class _HomeMapState extends State<HomeMap> {
@@ -114,6 +114,7 @@ class _HomeMapState extends State<HomeMap> {
     super.initState();
     //! GeoLocator 4 : panggil method getLocation di initState
     if (mounted) {
+      print('mapss 1');
       _getCurrentLocation().then((_) {
         context.read<MapCubit>().getLocationApi(
             'https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=rumah%20sakit&location=${_position!.latitude},${_position!.longitude}&radius=1500&type=rumah%20sakit&key=AIzaSyCyw7pp0GDBgTfaf3cSGf9XqA3PQG4Fl_4');

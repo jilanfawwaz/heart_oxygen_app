@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heart_oxygen_alarm/cubit/newsspo/newsspo_cubit.dart';
 import 'package:heart_oxygen_alarm/model/newsmakananolahraga.dart';
 import 'package:heart_oxygen_alarm/model/newsspo.dart';
 
@@ -10,8 +12,6 @@ class HalamanSPO extends StatelessWidget {
   HalamanSPO({super.key});
 
   static const nameRoute = '/halamanspo';
-
-  final List<NewsSPO> dataBerita = NewsSPOData.listDataBerita;
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +28,27 @@ class HalamanSPO extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: dataBerita.length,
-              itemBuilder: (BuildContext context, int i) {
-                return NewsCardWidget(
-                  title: dataBerita[i].title,
-                  deskripsi: dataBerita[i].deskripsi,
-                  image: dataBerita[i].image,
-                  url: dataBerita[i].url,
+          BlocBuilder<NewsSpoCubit, NewsSpoState>(
+            builder: (context, dataBerita) {
+              if (dataBerita is NewsSpoSuccess) {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: dataBerita.newsSpoModel.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return NewsCardWidget(
+                        title: dataBerita.newsSpoModel[i].title,
+                        deskripsi: dataBerita.newsSpoModel[i].deskripsi,
+                        image: dataBerita.newsSpoModel[i].image,
+                        url: dataBerita.newsSpoModel[i].url,
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
           const SizedBox(
             height: 100,

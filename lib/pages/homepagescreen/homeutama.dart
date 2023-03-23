@@ -118,7 +118,7 @@ class _HomeUtamaState extends State<HomeUtama> {
         (() {
           if (!isSpo) {
             setState(() {
-              angkaSpoUtama = Random().nextInt(7) + 93;
+              angkaSpoUtama = Random().nextInt(2) + 98;
               spoControllerNew =
                   TextEditingController(text: angkaSpoUtama.toString());
               SpoModel.spoValue.add(angkaSpoUtama);
